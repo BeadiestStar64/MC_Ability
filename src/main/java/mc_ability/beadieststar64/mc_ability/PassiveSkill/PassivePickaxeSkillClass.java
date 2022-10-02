@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.entity.Boss;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,6 +29,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.bukkit.Bukkit.getLogger;
 import static org.bukkit.Bukkit.getPlayer;
@@ -71,7 +74,7 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
                 //レベルアップ通知
                 player.sendMessage(ChatColor.GREEN+""+ChatColor.BOLD+"採掘レベル" +
                         ChatColor.WHITE+"が" +
-                        ChatColor.GOLD+""+ChatColor.BOLD+GetPlayerMinerLevel +
+                        ChatColor.GOLD+""+ChatColor.BOLD+(int)GetPlayerMinerLevel +
                         ChatColor.WHITE+"にレベルアップしました！");
                 player.playSound(player.getLocation(),Sound.ENTITY_PLAYER_LEVELUP, 1,1);
             }else{
@@ -86,28 +89,29 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
 
     //改良必須
     public void LevelBarShow(Player player) {
-        BossBar MinerLevel = Bukkit.createBossBar("Miner Lv:"+GetPlayerMinerLevel, BarColor.GREEN, BarStyle.SOLID);
+        BossBar MinerLevel = Bukkit.createBossBar("Miner Lv:"+(int)GetPlayerMinerLevel, BarColor.GREEN, BarStyle.SOLID);
 
-        BukkitRunnable runnable = new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (DisplayMinerBossBarTime == 0) {
-                    cancel();
-                    DisplayMinerBossBarTime = 3;
-                    OverRideMinerLevel = false;
-                    MinerLevel.removeAll();
+        if(OverRideMinerLevel) {
+            MinerLevel.setVisible(false);
+        }else {
+            MinerLevel.setVisible(true);
+            OverRideMinerLevel = true;
+            BukkitRunnable runnable = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (DisplayMinerBossBarTime <= 0) {
+                        cancel();
+                        DisplayMinerBossBarTime = 3;
+                        OverRideMinerLevel = false;
+                        MinerLevel.removePlayer(player);
+                    }
+                    DisplayMinerBossBarTime--;
                 }
-                DisplayMinerBossBarTime--;
-                if (!OverRideMinerLevel) {
-                    MinerLevel.setVisible(true);
-                    OverRideMinerLevel = true;
-                } else {
-                    MinerLevel.setVisible(false);
-                }
-            }
-        };
-        runnable.runTaskTimer(plugin,0,20L);
+            };
+            runnable.runTaskTimer(plugin,0,20L);
+        }
         MinerLevel.setProgress(GetPlayerMinerEXP/NextPlayerMinerEXP);
         MinerLevel.addPlayer(player);
     }
+
 }

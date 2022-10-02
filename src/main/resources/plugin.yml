@@ -4,8 +4,10 @@ main: mc_ability.beadieststar64.mc_ability.MC_Ability
 api-version: 1.19
 
 commands:
-  delete_sql:
-    description: 指定したプレイヤー情報をMC_Abilityデーターベースから削除します。
 
-  confirm:
-    description: 多大な影響を及ぼしかねない操作を許可するために使います。
+  MC_Ability_PassiveSkill:
+    aliases: ShowME
+    description: コマンド送信者のMinerのEXPを知ることができます
+    permission: op
+    permission-message: Permission denied
+    usage: 使用方法 [MC_Ability_PassiveSkill Show Miner EXP]
