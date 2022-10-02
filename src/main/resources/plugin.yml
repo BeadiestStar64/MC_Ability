@@ -1,0 +1,11 @@
+name: MC_Ability
+version: '${project.version}'
+main: mc_ability.beadieststar64.mc_ability.MC_Ability
+api-version: 1.19
+
+commands:
+  delete_sql:
+    description: 指定したプレイヤー情報をMC_Abilityデーターベースから削除します。
+
+  confirm:
+    description: 多大な影響を及ぼしかねない操作を許可するために使います。
