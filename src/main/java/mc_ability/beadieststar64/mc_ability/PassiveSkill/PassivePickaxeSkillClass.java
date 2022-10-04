@@ -40,12 +40,14 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
     public Material[] Pickaxe = {Material.WOODEN_PICKAXE, Material.STONE_PICKAXE, Material.IRON_PICKAXE, Material.GOLDEN_PICKAXE, Material.DIAMOND_PICKAXE, Material.NETHERITE_PICKAXE};
     public ArrayList<Material> PickaxeList = new ArrayList<>(Arrays.asList(Pickaxe));
 
-    //static最恐！
-    public static double GetPlayerMinerLevel;
-    public static double GetPlayerMinerEXP;
-    public static double NextPlayerMinerLevel;
-    public static double NextPlayerMinerEXP;
-    public static double SetPlayerMinerEXP = 0;
+
+    public static Map<Player, Integer> GetPlayerMinerLevel = new HashMap<>();
+    public static Map<Player, Double> GetPlayerMinerEXP = new HashMap<>();
+    public static Map<Player, Integer> NextPlayerMinerLevel = new HashMap<>();
+    public static Map<Player, Double> NextPlayerMinerEXP = new HashMap<>();
+    public static Map<Player, Double> SetPlayerMinerEXP = new HashMap<>();
+
+
     public static double DisplayMinerBossBarTime = 3;
     public static boolean OverRideMinerLevel = false;
 
@@ -60,28 +62,29 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
     public void PassiveSkillMethod(BlockBreakEvent event) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
+        SetPlayerMinerEXP.put(player, 0.0);
 
         if(PickaxeList.contains(player.getInventory().getItemInMainHand().getType())) {
             if(TerracottaList.contains(block.getType())) {
-                SetPlayerMinerEXP = SetPlayerMinerEXP+2;
+                SetPlayerMinerEXP.put(player, (SetPlayerMinerEXP.get(player)+2.0));
             }
-            if(NextPlayerMinerEXP <= GetPlayerMinerEXP+SetPlayerMinerEXP) {
-                GetPlayerMinerLevel++;
-                GetPlayerMinerEXP = NextPlayerMinerEXP-SetPlayerMinerEXP;
-                NextPlayerMinerLevel++;
-                NextPlayerMinerEXP = (int) (NextPlayerMinerEXP *1.5);
+            if(NextPlayerMinerEXP.get(player) <= GetPlayerMinerEXP.get(player)+SetPlayerMinerEXP.get(player)) {
+                GetPlayerMinerLevel.put(player, (int) NextPlayerMinerLevel.get(player));
+                GetPlayerMinerEXP.put(player, NextPlayerMinerEXP.get(player)-SetPlayerMinerEXP.get(player));
+                NextPlayerMinerLevel.put(player, GetPlayerMinerLevel.get(player)+1);
+                NextPlayerMinerEXP.put(player, (NextPlayerMinerEXP.get(player) *2.0));
 
                 //レベルアップ通知
                 player.sendMessage(ChatColor.GREEN+""+ChatColor.BOLD+"採掘レベル" +
                         ChatColor.WHITE+"が" +
-                        ChatColor.GOLD+""+ChatColor.BOLD+(int)GetPlayerMinerLevel +
+                        ChatColor.GOLD+""+ChatColor.BOLD+GetPlayerMinerLevel.get(player) +
                         ChatColor.WHITE+"にレベルアップしました！");
                 player.playSound(player.getLocation(),Sound.ENTITY_PLAYER_LEVELUP, 1,1);
             }else{
-                GetPlayerMinerEXP = GetPlayerMinerEXP+SetPlayerMinerEXP;
+                GetPlayerMinerEXP.put(player, (GetPlayerMinerEXP.get(player) + SetPlayerMinerEXP.get(player)));
             }
 
-            SetPlayerMinerEXP = 0;
+            SetPlayerMinerEXP.put(player, 0.0);
 
             LevelBarShow(player);
         }
@@ -89,7 +92,7 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
 
     //改良必須
     public void LevelBarShow(Player player) {
-        BossBar MinerLevel = Bukkit.createBossBar("Miner Lv:"+(int)GetPlayerMinerLevel, BarColor.GREEN, BarStyle.SOLID);
+        BossBar MinerLevel = Bukkit.createBossBar("Miner Lv:"+(int)GetPlayerMinerLevel.get(player), BarColor.GREEN, BarStyle.SOLID);
 
         if(OverRideMinerLevel) {
             MinerLevel.setVisible(false);
@@ -110,7 +113,7 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
             };
             runnable.runTaskTimer(plugin,0,20L);
         }
-        MinerLevel.setProgress(GetPlayerMinerEXP/NextPlayerMinerEXP);
+        MinerLevel.setProgress(GetPlayerMinerEXP.get(player)/NextPlayerMinerEXP.get(player));
         MinerLevel.addPlayer(player);
     }
 

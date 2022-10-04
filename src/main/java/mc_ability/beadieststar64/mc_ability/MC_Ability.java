@@ -10,10 +10,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class MC_Ability extends JavaPlugin implements Listener {
 
@@ -21,7 +24,12 @@ public final class MC_Ability extends JavaPlugin implements Listener {
 
     public static MC_Ability plugins;
 
+    static PassivePickaxeSkillClass passivePickaxeSkillClass = new PassivePickaxeSkillClass(plugins);
+
     public int MaxPlayers = 1;
+
+    //プラグインバージョン設定
+    private final String version = "1.0.6";
 
 
     @Override
@@ -30,18 +38,12 @@ public final class MC_Ability extends JavaPlugin implements Listener {
         plugins = this;
 
         //イベント登録
-        getServer().getPluginManager().registerEvents(this, this);
-        getServer().getPluginManager().registerEvents(new ActivePickaxeSkillClass(this), this);
-        getServer().getPluginManager().registerEvents(new ActiveShovelSkillClass(this), this);
-        getServer().getPluginManager().registerEvents(new PassivePickaxeSkillClass(this), this);
+        RegisterEvents();
 
         //コマンド登録
-        getCommand("MC_Ability_PassiveSkill").setExecutor(new CommandClass());
+        RegisterCommand();
 
         getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "MC_Ability has been activate!");
-
-        //プラグインバージョン設定
-        String version = "1.0.5";
 
         getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "Version is" +
                 ChatColor.RED + "" + ChatColor.RED + version +
@@ -122,9 +124,11 @@ public final class MC_Ability extends JavaPlugin implements Listener {
     public void ConnectionDataBase(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
+        Map<String, Boolean> IncludePlayer = new HashMap<String, Boolean>();
+
         try {
             //MC_ABILITYテーブルにプレイヤーが含まれるか確認
-            boolean IncludePlayer = false;
+            IncludePlayer.put(player.getUniqueId().toString(),false);
             String PlayerName = "";
             String UpdatePlayer = "";
             PreparedStatement prepStmt = con.prepareStatement("SELECT MCID FROM PLAYER WHERE UUID=?");
@@ -132,7 +136,7 @@ public final class MC_Ability extends JavaPlugin implements Listener {
             ResultSet rs = prepStmt.executeQuery();
             con.commit();
             if (rs.next()) {
-                IncludePlayer = true;
+                IncludePlayer.put(player.getUniqueId().toString(),true);
                 PlayerName = rs.getString(1);
                 MaxPlayers++;
                 if (!PlayerName.equals(event.getPlayer().getName())) {
@@ -143,7 +147,7 @@ public final class MC_Ability extends JavaPlugin implements Listener {
             prepStmt.close();
 
             //新規プレイヤーならデーターを追加
-            if (!IncludePlayer) {
+            if (!IncludePlayer.get(player.getUniqueId().toString())) {
                 getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "新規プレイヤー情報が見つかりませんでした。データを追加します。");
                 prepStmt = con.prepareStatement("INSERT INTO PLAYER(" +
                         "MCID" +
@@ -241,14 +245,14 @@ public final class MC_Ability extends JavaPlugin implements Listener {
             ResultSet RS = PrepStmt.executeQuery();
             con.commit();
             if (RS.next()) {
-                PassivePickaxeSkillClass.GetPlayerMinerLevel = RS.getInt(1);
-                PassivePickaxeSkillClass.GetPlayerMinerEXP = RS.getInt(2);
-                PassivePickaxeSkillClass.NextPlayerMinerLevel = RS.getInt(3);
-                PassivePickaxeSkillClass.NextPlayerMinerEXP = RS.getInt(4);
-                getLogger().info("値は"+ PassivePickaxeSkillClass.GetPlayerMinerLevel +
-                        "、"+ PassivePickaxeSkillClass.GetPlayerMinerEXP
-                        +"、"+ PassivePickaxeSkillClass.NextPlayerMinerLevel
-                        +"、"+ PassivePickaxeSkillClass.NextPlayerMinerEXP);
+                passivePickaxeSkillClass.GetPlayerMinerLevel.put(player, RS.getInt(1));
+                passivePickaxeSkillClass.GetPlayerMinerEXP.put(player, RS.getDouble(2));
+                passivePickaxeSkillClass.NextPlayerMinerLevel.put(player, RS.getInt(3));
+                passivePickaxeSkillClass.NextPlayerMinerEXP.put(player, RS.getDouble(4));
+                getLogger().info("値は"+ passivePickaxeSkillClass.GetPlayerMinerLevel.get(player) +
+                        "、"+ passivePickaxeSkillClass.GetPlayerMinerEXP.get(player)
+                        +"、"+ passivePickaxeSkillClass.NextPlayerMinerLevel.get(player)
+                        +"、"+ passivePickaxeSkillClass.NextPlayerMinerEXP.get(player));
             }
             RS.close();
             PrepStmt.close();
@@ -263,19 +267,19 @@ public final class MC_Ability extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         try {
             PreparedStatement prepStmt = con.prepareStatement("UPDATE PLAYER_PASSIVE_SKILL_LEVEL SET PLAYER_MINER_LEVEL=? WHERE UUID=?" );
-            prepStmt.setDouble(1, PassivePickaxeSkillClass.GetPlayerMinerLevel);
+            prepStmt.setDouble(1,passivePickaxeSkillClass.GetPlayerMinerLevel.get(player));
             prepStmt.setString(2,player.getUniqueId().toString());
             prepStmt.addBatch();
             PreparedStatement prepStmt2 = con.prepareStatement("UPDATE PLAYER_PASSIVE_SKILL_LEVEL SET PLAYER_MINER_EXP=? WHERE UUID=?");
-            prepStmt2.setDouble(1, PassivePickaxeSkillClass.GetPlayerMinerEXP);
+            prepStmt2.setDouble(1, passivePickaxeSkillClass.GetPlayerMinerEXP.get(player));
             prepStmt2.setString(2,player.getUniqueId().toString());
             prepStmt2.addBatch();
             PreparedStatement prepStmt3 = con.prepareStatement("UPDATE PLAYER_PASSIVE_SKILL_LEVEL SET PLAYER_NEXT_MINER_LEVEL=? WHERE UUID=?");
-            prepStmt3.setDouble(1, PassivePickaxeSkillClass.NextPlayerMinerLevel);
+            prepStmt3.setDouble(1, passivePickaxeSkillClass.NextPlayerMinerLevel.get(player));
             prepStmt3.setString(2,player.getUniqueId().toString());
             prepStmt3.addBatch();
             PreparedStatement prepStmt4 = con.prepareStatement("UPDATE PLAYER_PASSIVE_SKILL_LEVEL SET PLAYER_NEXT_MINER_EXP=? WHERE UUID=?");
-            prepStmt4.setDouble(1, PassivePickaxeSkillClass.NextPlayerMinerEXP);
+            prepStmt4.setDouble(1, passivePickaxeSkillClass.NextPlayerMinerEXP.get(player));
             prepStmt4.setString(2,player.getUniqueId().toString());
             prepStmt4.addBatch();
 
@@ -305,6 +309,13 @@ public final class MC_Ability extends JavaPlugin implements Listener {
     }
 
     public void RegisterCommand() {
+        getCommand("MC_Ability_PassiveSkill").setExecutor(new CommandClass());
+    }
 
+    public void RegisterEvents() {
+        getServer().getPluginManager().registerEvents(this, this);
+        getServer().getPluginManager().registerEvents(new ActivePickaxeSkillClass(this), this);
+        getServer().getPluginManager().registerEvents(new ActiveShovelSkillClass(this), this);
+        getServer().getPluginManager().registerEvents(new PassivePickaxeSkillClass(this), this);
     }
 }
