@@ -1,4 +1,6 @@
 package mc_ability.beadieststar64.mc_ability.PassiveSkill;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import jdk.jfr.Enabled;
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -48,11 +50,21 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
     public static Map<Player, Double> SetPlayerMinerEXP = new HashMap<>();
 
 
-    public static double DisplayMinerBossBarTime = 3;
-    public static boolean OverRideMinerLevel = false;
+    public static Map<Player, Double> DisplayMinerBossBarTime = new HashMap<>();
+    public static Map<Player, Boolean> OverRideMinerLevel = new HashMap<>();
+    public static Map<Player, Boolean> bool = new HashMap<>();
 
     public Material[] Terracotta = {Material.TERRACOTTA, Material.BLACK_TERRACOTTA, Material.BLUE_TERRACOTTA, Material.ORANGE_TERRACOTTA};
     public ArrayList<Material> TerracottaList = new ArrayList<>(Arrays.asList(Terracotta));
+
+    public static Map<Player, BossBar> MinerLevelBossBar = new HashMap<>();
+    BossBar MinerKevel = Bukkit.createBossBar(ChatColor.GREEN+""+ChatColor.BOLD+"採掘", BarColor.GREEN, BarStyle.SOLID);
+
+    public void SetMethod(Player player) {
+        DisplayMinerBossBarTime.put(player, 5.0);
+        OverRideMinerLevel.put(player, false);
+        bool.put(player, false);
+    }
 
     public PassivePickaxeSkillClass(MC_Ability plugin) {
         super(plugin);
@@ -70,7 +82,7 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
             }
             if(NextPlayerMinerEXP.get(player) <= GetPlayerMinerEXP.get(player)+SetPlayerMinerEXP.get(player)) {
                 GetPlayerMinerLevel.put(player, (int) NextPlayerMinerLevel.get(player));
-                GetPlayerMinerEXP.put(player, NextPlayerMinerEXP.get(player)-SetPlayerMinerEXP.get(player));
+                GetPlayerMinerEXP.put(player, (NextPlayerMinerEXP.get(player)-GetPlayerMinerEXP.get(player)));
                 NextPlayerMinerLevel.put(player, GetPlayerMinerLevel.get(player)+1);
                 NextPlayerMinerEXP.put(player, (NextPlayerMinerEXP.get(player) *2.0));
 
@@ -90,31 +102,69 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
         }
     }
 
-    //改良必須
-    public void LevelBarShow(Player player) {
-        BossBar MinerLevel = Bukkit.createBossBar("Miner Lv:"+(int)GetPlayerMinerLevel.get(player), BarColor.GREEN, BarStyle.SOLID);
-
-        if(OverRideMinerLevel) {
-            MinerLevel.setVisible(false);
-        }else {
-            MinerLevel.setVisible(true);
-            OverRideMinerLevel = true;
-            BukkitRunnable runnable = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (DisplayMinerBossBarTime <= 0) {
-                        cancel();
-                        DisplayMinerBossBarTime = 3;
-                        OverRideMinerLevel = false;
-                        MinerLevel.removePlayer(player);
-                    }
-                    DisplayMinerBossBarTime--;
-                }
-            };
-            runnable.runTaskTimer(plugin,0,20L);
+    public void LevelBarShow (Player player) {
+        if(MinerLevelBossBar.containsKey(player)) {
+            MinerKevel.setProgress(GetPlayerMinerEXP.get(player)/NextPlayerMinerEXP.get(player));
+            MinerKevel.setTitle(ChatColor.GREEN+""+ChatColor.BOLD+"採掘 Lv."+ChatColor.GOLD+GetPlayerMinerLevel.get(player));
+            MinerLevelBossBar.put(player, MinerKevel);
+            MinerKevel.addPlayer(player);
+        }else{
+            MinerKevel.setProgress(GetPlayerMinerEXP.get(player)/NextPlayerMinerEXP.get(player));
+            MinerKevel.setTitle(ChatColor.GREEN+""+ChatColor.BOLD+"採掘 Lv."+ChatColor.GOLD+GetPlayerMinerLevel.get(player));
+            MinerLevelBossBar.put(player, MinerKevel);
+            MinerKevel.addPlayer(player);
         }
-        MinerLevel.setProgress(GetPlayerMinerEXP.get(player)/NextPlayerMinerEXP.get(player));
-        MinerLevel.addPlayer(player);
+
+        if(OverRideMinerLevel.get(player)) {
+            bool.put(player, true);
+        }else{
+            bool.put(player, false);
+            DisplayMinerBossBarTime.put(player, 5.0);
+        }
+        CountDown(player);
     }
 
+    public void CountDown(Player player) {
+
+        Map<Player, Boolean> finalBool = new HashMap<>();
+        finalBool.put(player, bool.get(player));
+
+        BukkitRunnable runnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                OverRideMinerLevel.put(player, true);
+                getLogger().info(DisplayMinerBossBarTime.get(player).toString());
+                getLogger().info(finalBool.get(player).toString());
+
+                if(DisplayMinerBossBarTime.get(player) <= 0.0) {
+                    cancel();
+                    DisplayMinerBossBarTime.put(player, 5.0);
+                    MinerKevel.removePlayer(player);
+                    MinerLevelBossBar.put(player, MinerKevel);
+                    OverRideMinerLevel.put(player, false);
+                    return;
+                }
+
+                if(finalBool.get(player)) {
+                    cancel();
+                    OverRideMinerLevel.put(player, false);
+                    bool.put(player, false);
+                    getLogger().info("キャンセル処理が走りました");
+                    return;
+                }
+                DisplayMinerBossBarTime.put(player, (DisplayMinerBossBarTime.get(player) - 1.0));
+            }
+        };
+        runnable.runTaskTimer(plugin, 0, 20L);
+    }
+
+    public void DeleteHashMap (Player player) {
+        GetPlayerMinerLevel.remove(player);
+        GetPlayerMinerEXP.remove(player);
+        NextPlayerMinerLevel.remove(player);
+        NextPlayerMinerEXP.remove(player);
+        SetPlayerMinerEXP.remove(player);
+        DisplayMinerBossBarTime.remove(player);
+        OverRideMinerLevel.remove(player);
+    }
 }

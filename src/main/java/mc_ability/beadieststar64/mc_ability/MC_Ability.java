@@ -4,13 +4,13 @@ import mc_ability.beadieststar64.mc_ability.ActiveSkill.ActivePickaxeSkillClass;
 import mc_ability.beadieststar64.mc_ability.ActiveSkill.ActiveShovelSkillClass;
 import mc_ability.beadieststar64.mc_ability.PassiveSkill.PassivePickaxeSkillClass;
 import mc_ability.beadieststar64.mc_ability.Utility.CommandClass;
+import mc_ability.beadieststar64.mc_ability.Utility.SetUpFiles;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -25,11 +25,13 @@ public final class MC_Ability extends JavaPlugin implements Listener {
     public static MC_Ability plugins;
 
     static PassivePickaxeSkillClass passivePickaxeSkillClass = new PassivePickaxeSkillClass(plugins);
+    static ActivePickaxeSkillClass activePickaxeSkillClass = new ActivePickaxeSkillClass(plugins);
+    static SetUpFiles setUpFiles = new SetUpFiles();
 
     public int MaxPlayers = 1;
 
     //プラグインバージョン設定
-    private final String version = "1.0.6";
+    private final String version = "1.0.7";
 
 
     @Override
@@ -61,6 +63,12 @@ public final class MC_Ability extends JavaPlugin implements Listener {
             if (!configFile.exists()) {
                 this.saveDefaultConfig();
             }
+
+            //SQLiteロック回避用のファイル作成
+            SetUpFiles.SetUp();
+            SetUpFiles.get().addDefault("MC_Ability", "player:");
+            SetUpFiles.get().options().copyDefaults(true);
+            SetUpFiles.SaveFile();
 
             // JDBCドライバーの指定
             Class.forName("org.sqlite.JDBC");
@@ -241,7 +249,6 @@ public final class MC_Ability extends JavaPlugin implements Listener {
                     " FROM PLAYER_PASSIVE_SKILL_LEVEL" +
                     " WHERE UUID=?");
             PrepStmt.setString(1, player.getUniqueId().toString());
-            getLogger().info("SQL文は" + PrepStmt);
             ResultSet RS = PrepStmt.executeQuery();
             con.commit();
             if (RS.next()) {
@@ -249,14 +256,15 @@ public final class MC_Ability extends JavaPlugin implements Listener {
                 passivePickaxeSkillClass.GetPlayerMinerEXP.put(player, RS.getDouble(2));
                 passivePickaxeSkillClass.NextPlayerMinerLevel.put(player, RS.getInt(3));
                 passivePickaxeSkillClass.NextPlayerMinerEXP.put(player, RS.getDouble(4));
-                getLogger().info("値は"+ passivePickaxeSkillClass.GetPlayerMinerLevel.get(player) +
-                        "、"+ passivePickaxeSkillClass.GetPlayerMinerEXP.get(player)
-                        +"、"+ passivePickaxeSkillClass.NextPlayerMinerLevel.get(player)
-                        +"、"+ passivePickaxeSkillClass.NextPlayerMinerEXP.get(player));
             }
             RS.close();
             PrepStmt.close();
             MaxPlayers++;
+
+            //セットアップ
+            activePickaxeSkillClass.SetUp(player);
+            passivePickaxeSkillClass.SetMethod(player);
+
         }catch (Exception e) {
             ErrorLog(e);
         }
@@ -290,11 +298,13 @@ public final class MC_Ability extends JavaPlugin implements Listener {
 
             con.commit();
             prepStmt.close();
+            passivePickaxeSkillClass.DeleteHashMap(player);
         }catch (Exception e) {
             ErrorLog(e);
         }
         getServer().getConsoleSender().sendMessage(ChatColor.DARK_PURPLE+"ばいばい！");
         MaxPlayers--;
+
     }
 
     public void ErrorLog(Exception e) {

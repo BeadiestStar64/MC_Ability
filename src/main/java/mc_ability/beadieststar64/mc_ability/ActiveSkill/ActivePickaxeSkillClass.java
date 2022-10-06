@@ -1,5 +1,6 @@
 package mc_ability.beadieststar64.mc_ability.ActiveSkill;
 
+import com.sun.tools.javac.jvm.Items;
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -24,6 +25,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.bukkit.Bukkit.*;
 
@@ -32,7 +35,7 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
         super(plugin);
     }
 
-    public String PlayerOnHand = "";
+    public static Map<Player, String> PlayerOnHand = new HashMap<>();
 
     public Material[] Pickaxe = {Material.WOODEN_PICKAXE, Material.STONE_PICKAXE, Material.IRON_PICKAXE, Material.GOLDEN_PICKAXE, Material.DIAMOND_PICKAXE, Material.NETHERITE_PICKAXE};
     public Material[] Sword = {Material.WOODEN_SWORD, Material.STONE_SWORD, Material.IRON_SWORD, Material.GOLDEN_SWORD, Material.DIAMOND_SWORD, Material.NETHERITE_SWORD};
@@ -44,17 +47,27 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
     public ArrayList<Material> AxeList = new ArrayList<>(Arrays.asList(Axe));
     public ArrayList<Material> HoeList = new ArrayList<>(Arrays.asList(Hoe));
 
-    public boolean CoolDown = false; //クールダウンか判定
-    public boolean CoolDownTimeDisplay = false; //クールダウンの時間を表示
-    public boolean ActivationActiveSkill = false; //スキル発動中か判定
-    public boolean ActiveSkillWait = false; //スキル発動待機中か判定
-    public double SkillWaitTimer = 5; //スキル待機時間を設定
-    public double ActivationSkillCountDownTime = 20; //スキルの効果時間
-    public double CoolDownTime = 30; //クールダウンに必要な時間
+    public static Map<Player, Boolean> CoolDown = new HashMap<>(); //クールダウンか判定
+    public static Map<Player, Boolean> CoolDownTimeDisplay = new HashMap<>(); //クールダウンの時間を表示
+    public static Map<Player, Boolean> ActivationActiveSkill = new HashMap<>(); //スキル発動中か判定
+    public static Map<Player, Boolean> ActiveSkillWait = new HashMap<>(); //スキル発動待機中か判定
+    public static Map<Player, Integer> SkillWaitTimer = new HashMap<>(); //スキル待機時間を設定
+    public static Map<Player, Integer> ActivationSkillCountDownTime = new HashMap<>(); //スキルの効果時間
+    public static Map<Player, Integer>  CoolDownTime = new HashMap<>(); //クールダウンに必要な時間
 
     public Connection con;
     public final int IS_PICKAXE_SKILL_ACTIVATE_FALSE = 1;
     public final int IS_PICKAXE_SKILL_ACTIVATE_TRUE = 2;
+
+    public void SetUp(Player player) {
+        CoolDown.put(player, false);
+        CoolDownTimeDisplay.put(player, false);
+        ActivationActiveSkill.put(player, false);
+        ActiveSkillWait.put(player, false);
+        SkillWaitTimer.put(player, 5);
+        ActivationSkillCountDownTime.put(player, 20);
+        CoolDownTime.put(player, 30);
+    }
 
     @EventHandler
     public void PreparationActiveSkill(PlayerInteractEvent event) {
@@ -77,22 +90,22 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
 
     public void ActiveSkillMethod(Player player) {
         //クールダウンか判定
-        if(CoolDown) {
-            CoolDownTimeDisplay = true;
+        if(CoolDown.get(player)) {
+            CoolDownTimeDisplay.put(player, true);
             CoolDownMethod(player);
         }else{
             //スキル発動中か判定
-            if(!ActivationActiveSkill){
+            if(!ActivationActiveSkill.get(player)){
                 //スキル発動待機カウント中か判定
-                if(!ActiveSkillWait) {
+                if(!ActiveSkillWait.get(player)) {
                     if(PickaxeList.contains(player.getInventory().getItemInMainHand().getType())) {
-                        PlayerOnHand = "ツルハシ";
+                        PlayerOnHand.put(player, "ツルハシ");
                         TextComponent component = new TextComponent();
-                        component.setText(ChatColor.GOLD+""+ChatColor.BOLD+PlayerOnHand +
+                        component.setText(ChatColor.GOLD+""+ChatColor.BOLD+PlayerOnHand.get(player) +
                         ChatColor.WHITE+"を構えた");
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, component);
                         player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_DIAMOND,1,1);
-                        ActiveSkillWait = true;
+                        ActiveSkillWait.put(player, true);
                         ActiveSkillWaitTimer(player);
                     }
                 }
@@ -104,24 +117,24 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
-                if(SkillWaitTimer <= 0) {
+                if(SkillWaitTimer.get(player) <= 0) {
                     cancel();
-                    ActiveSkillWait = false;
-                    SkillWaitTimer = 5;
+                    ActiveSkillWait.put(player, false);
+                    SkillWaitTimer.put(player, 5);
                     TextComponent CountDownTime = new TextComponent();
-                    CountDownTime.setText(ChatColor.GOLD+""+ ChatColor.BOLD+PlayerOnHand +
+                    CountDownTime.setText(ChatColor.GOLD+""+ ChatColor.BOLD+PlayerOnHand.get(player) +
                             ChatColor.WHITE+"を下した...");
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, CountDownTime);
                     return;
                 }
-                if(ActivationActiveSkill){
+                if(ActivationActiveSkill.get(player)){
                     cancel();
-                    ActiveSkillWait = false;
-                    SkillWaitTimer = 5;
+                    ActiveSkillWait.put(player, false);
+                    SkillWaitTimer.put(player, 5);
                     return;
                 }
-                ActiveSkillWait = true;
-                SkillWaitTimer--;
+                ActiveSkillWait.put(player, true);
+                SkillWaitTimer.put(player, (SkillWaitTimer.get(player) - 1));
             }
         };
         runnable.runTaskTimer(plugin,0,20L);
@@ -137,26 +150,31 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
         }
         Player player = event.getPlayer();
         //クールダウンか判定
-        if(!CoolDown) {
+        if(!CoolDown.get(player)) {
             //スキル発動待機状態か判定
-            if(ActiveSkillWait) {
+            if(ActiveSkillWait.get(player)) {
                 //スキル発動中か判定
-                if(!ActivationActiveSkill) {
+                if(!ActivationActiveSkill.get(player)) {
                     //ピッケルをメインハンドに持っているか判定
                     if(PickaxeList.contains(player.getInventory().getItemInMainHand().getType())) {
-                        ActivationActiveSkill = true;
-                        ActiveSkillWait = false;
+                        ActivationActiveSkill.put(player, true);
+                        ActiveSkillWait.put(player, false);
                         //エンチャントを付与
-                        ItemStack pickaxe = player.getInventory().getItemInMainHand();
-                        int GetEnchantmentLevel = pickaxe.getEnchantmentLevel(Enchantment.DIG_SPEED);
-                        int AddEnchantmentLevel = GetEnchantmentLevel+5;
-                        pickaxe.removeEnchantment(Enchantment.DIG_SPEED);
-                        if(AddEnchantmentLevel <= 5) {
-                            pickaxe.addEnchantment(Enchantment.DIG_SPEED,AddEnchantmentLevel);
+                        Map<Player, ItemStack> pickaxe = new HashMap<>();
+                        Map<Player, Integer> GetEnchantmentLevel = new HashMap<>();
+                        Map<Player, Integer> AddEnchantmentLevel = new HashMap<>();
+
+                        pickaxe.put(player, player.getInventory().getItemInMainHand());
+                        GetEnchantmentLevel.put(player, pickaxe.get(player).getEnchantmentLevel(Enchantment.DIG_SPEED));
+                        AddEnchantmentLevel.put(player, (GetEnchantmentLevel.get(player)+5));
+                        pickaxe.get(player).removeEnchantment(Enchantment.DIG_SPEED);
+
+                        if(AddEnchantmentLevel.get(player) <= 5) {
+                            pickaxe.get(player).addEnchantment(Enchantment.DIG_SPEED,AddEnchantmentLevel.get(player));
                         }else{
-                            pickaxe.addUnsafeEnchantment(Enchantment.DIG_SPEED,AddEnchantmentLevel);//バニラ以上のエンチャントレベル付与
+                            pickaxe.get(player).addUnsafeEnchantment(Enchantment.DIG_SPEED,AddEnchantmentLevel.get(player));//バニラ以上のエンチャントレベル付与
                         }
-                        player.getInventory().setItemInMainHand(pickaxe);
+                        player.getInventory().setItemInMainHand(pickaxe.get(player));
 
                         TextComponent ActiveSkillComponent = new TextComponent();
                         ActiveSkillComponent.setText(ChatColor.AQUA+""+ChatColor.BOLD+"アクティブスキル"+
@@ -167,34 +185,38 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
                         BukkitRunnable runnable = new BukkitRunnable() {
                             @Override
                             public void run() {
-                                if(ActivationSkillCountDownTime == 0) {
+                                if(ActivationSkillCountDownTime.get(player) == 0) {
                                     cancel();
 
-                                    ActivationActiveSkill = false;
-                                    CoolDown = true;
-                                    ActivationSkillCountDownTime = 20;
+                                    ActivationActiveSkill.put(player, false);
+                                    CoolDown.put(player, true);
+                                    ActivationSkillCountDownTime.put(player, 20);
 
                                     TextComponent CoolDownStartComponent = new TextComponent();
                                     CoolDownStartComponent.setText(ChatColor.GOLD+""+ChatColor.BOLD+"マイナー"+
                                             ChatColor.WHITE+"を消費した....");
 
-                                    ItemStack BeforePickaxe = player.getInventory().getItemInMainHand();
+                                    Map<Player, ItemStack> BeforePickaxe = new HashMap<>();
+                                    BeforePickaxe.put(player, player.getInventory().getItemInMainHand());
                                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR,CoolDownStartComponent);
 
-                                    int AfterGetEnchantmentLevel = BeforePickaxe.getEnchantmentLevel(Enchantment.DIG_SPEED);
-                                    int AfterAddEnchantment = AfterGetEnchantmentLevel-5;
-                                    BeforePickaxe.removeEnchantment(Enchantment.DIG_SPEED);
+                                    Map<Player, Integer> AfterGetEnchantmentLevel = new HashMap<>();
+                                    Map<Player, Integer> AfterAddEnchantment = new HashMap<>();
 
-                                    if(AfterAddEnchantment >= 1 && AfterAddEnchantment <= 5) {
-                                        BeforePickaxe.addEnchantment(Enchantment.DIG_SPEED,AfterAddEnchantment);
-                                    }else if(AfterAddEnchantment < 5) {
-                                        BeforePickaxe.addUnsafeEnchantment(Enchantment.DIG_SPEED, AfterAddEnchantment);
+                                    AfterGetEnchantmentLevel.put(player, BeforePickaxe.get(player).getEnchantmentLevel(Enchantment.DIG_SPEED));
+                                    AfterAddEnchantment.put(player,(AfterGetEnchantmentLevel.get(player)-5));
+                                    BeforePickaxe.get(player).removeEnchantment(Enchantment.DIG_SPEED);
+
+                                    if(AfterAddEnchantment.get(player) >= 1 && AfterAddEnchantment.get(player) <= 5) {
+                                        BeforePickaxe.get(player).addEnchantment(Enchantment.DIG_SPEED,AfterAddEnchantment.get(player));
+                                    }else if(AfterAddEnchantment.get(player) > 5) {
+                                        BeforePickaxe.get(player).addUnsafeEnchantment(Enchantment.DIG_SPEED, AfterAddEnchantment.get(player));
                                     }
 
                                     CoolDownMethod(player);
                                     return;
                                 }
-                                ActivationSkillCountDownTime--;
+                                ActivationSkillCountDownTime.put(player, (ActivationSkillCountDownTime.get(player) - 1));
                             }
                         };
                         runnable.runTaskTimer(plugin,0,20L);
@@ -205,30 +227,30 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
     }
 
     public void CoolDownMethod(Player player) {
-        if(!CoolDownTimeDisplay) {
+        if(!CoolDownTimeDisplay.get(player)) {
             BukkitRunnable CoolDownRunnable = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if(CoolDownTime == 0) {
+                    if(CoolDownTime.get(player) == 0) {
                         cancel();
-                        CoolDown = false;
+                        CoolDown.put(player, false);
                         TextComponent CoolDownComponent = new TextComponent();
                         CoolDownComponent.setText(ChatColor.AQUA+"クールダウンが終了しました");
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR,CoolDownComponent);
                         player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
                         return;
                     }
-                    CoolDownTime--;
+                    CoolDownTime.put(player, (CoolDownTime.get(player) - 1));
                 }
             };
             CoolDownRunnable.runTaskTimer(plugin,0,20L);
         }else{
             TextComponent CoolDownComponent = new TextComponent();
             CoolDownComponent.setText(ChatColor.RED+""+ChatColor.BOLD+"ただいまクールダウン中です!そのスキルを使うにはあと" +
-            ChatColor.GOLD+CoolDownTime +
+            ChatColor.GOLD+CoolDownTime.get(player) +
             ChatColor.RED+ChatColor.BOLD+"秒お待ちください!");
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR,CoolDownComponent);
-            CoolDownTimeDisplay = false;
+            CoolDownTimeDisplay.put(player, false);
             return;
         }
     }
