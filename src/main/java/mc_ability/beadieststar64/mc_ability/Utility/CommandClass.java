@@ -1,7 +1,9 @@
 package mc_ability.beadieststar64.mc_ability.Utility;
 
+import mc_ability.beadieststar64.mc_ability.GUI.PlayerGUI;
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
 import mc_ability.beadieststar64.mc_ability.PassiveSkill.PassivePickaxeSkillClass;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,65 +18,71 @@ import java.util.List;
 
 public class CommandClass implements CommandExecutor, TabCompleter {
 
-    public MC_Ability plugin;
+    public  MC_Ability plugin;
 
+    //改良必須
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Command command, @NotNull String label, String[] args) {
         Player player = (Player) sender;
-        if (! (sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "コンソールからは使用できません!");
-            return false;
-        }
-        if(command.getName().equalsIgnoreCase("MC_Ability_PassiveSkill")) {
-            if(args.length > 0) {
-                if(args[0].equalsIgnoreCase("Show")) {
-                    if(args[1].equalsIgnoreCase("Miner")) {
-                        if(args[2].equalsIgnoreCase("NowEXP")) {
-                            //指定したプレイヤーのPassive SkillのMinerのEXPを表示
-                            player.sendMessage(ChatColor.GOLD+""+ChatColor.BOLD+"===== Miner_NOW_EXP =====");
-                            player.sendMessage(ChatColor.WHITE+"Minerの経験値は" +
-                                    ChatColor.GREEN+""+ChatColor.BOLD+PassivePickaxeSkillClass.GetPlayerMinerEXP.get(player) +
-                                    ChatColor.WHITE+"です。");
-                            return true;
-                        }else if(args[2].equalsIgnoreCase("NowLevel")){
-                            //指定したプレイヤーのPassive SkillのMinerのlevelを表示
-                            player.sendMessage(ChatColor.GOLD+""+ChatColor.BOLD+"===== Miner_NOW_LEVEL =====");
-                            player.sendMessage(ChatColor.WHITE+"Minerのレベルは" +
-                                    ChatColor.GREEN+""+ChatColor.BOLD+PassivePickaxeSkillClass.GetPlayerMinerLevel.get(player) +
-                                    ChatColor.WHITE+"です。");
-                            return true;
-                        }else if(args[2].equalsIgnoreCase("NextEXP")) {
-                            player.sendMessage(ChatColor.GOLD+""+ChatColor.BOLD+"===== Miner_NEXT_EXP =====");
-                            player.sendMessage(ChatColor.WHITE+"次のレベルアップの経験値は" +
-                                    ChatColor.GREEN+""+ChatColor.BOLD+PassivePickaxeSkillClass.NextPlayerMinerEXP.get(player) +
-                                    ChatColor.WHITE+"です。");
-                            player.sendMessage(ChatColor.WHITE+"あと" +
-                                    ChatColor.GREEN+""+ChatColor.BOLD+(PassivePickaxeSkillClass.NextPlayerMinerEXP.get(player) - PassivePickaxeSkillClass.GetPlayerMinerEXP.get(player)) +
-                                    ChatColor.WHITE+"EXPでレベルアップします。");
-                            return true;
-                        }else if(args[2].equalsIgnoreCase("NextLevel")) {
-                            player.sendMessage(ChatColor.GOLD+""+ChatColor.BOLD+"===== Miner_NEXT_LEVEL =====");
-                            player.sendMessage(ChatColor.WHITE+"次のレベルアップの経験値は" +
-                                    ChatColor.GREEN+""+ChatColor.BOLD+PassivePickaxeSkillClass.NextPlayerMinerLevel.get(player) +
-                                    ChatColor.WHITE+"です。");
-                            return true;
+        if(sender == player){
+            if(command.getName().equalsIgnoreCase("MC_Ability_PassiveSkill")) {
+                if(args.length > 0) {
+                    if(args[0].equalsIgnoreCase("Show")) {
+                        if(args[1].equalsIgnoreCase("Miner")) {
+                            if(args[2].equalsIgnoreCase("NowEXP")) {
+                                //指定したプレイヤーのPassive SkillのMinerのEXPを表示
+                                player.sendMessage(ChatColor.GOLD+""+ChatColor.BOLD+"===== Miner_NOW_EXP =====");
+                                player.sendMessage(ChatColor.WHITE+"Minerの経験値は" +
+                                        ChatColor.GREEN+""+ChatColor.BOLD+PassivePickaxeSkillClass.GetPlayerMinerEXP.get(player) +
+                                        ChatColor.WHITE+"です。");
+                                return true;
+                            }else if(args[2].equalsIgnoreCase("NowLevel")){
+                                //指定したプレイヤーのPassive SkillのMinerのlevelを表示
+                                player.sendMessage(ChatColor.GOLD+""+ChatColor.BOLD+"===== Miner_NOW_LEVEL =====");
+                                player.sendMessage(ChatColor.WHITE+"Minerのレベルは" +
+                                        ChatColor.GREEN+""+ChatColor.BOLD+PassivePickaxeSkillClass.GetPlayerMinerLevel.get(player) +
+                                        ChatColor.WHITE+"です。");
+                                return true;
+                            }else if(args[2].equalsIgnoreCase("NextEXP")) {
+                                player.sendMessage(ChatColor.GOLD+""+ChatColor.BOLD+"===== Miner_NEXT_EXP =====");
+                                player.sendMessage(ChatColor.WHITE+"次のレベルアップの経験値は" +
+                                        ChatColor.GREEN+""+ChatColor.BOLD+PassivePickaxeSkillClass.NextPlayerMinerEXP.get(player) +
+                                        ChatColor.WHITE+"です。");
+                                player.sendMessage(ChatColor.WHITE+"あと" +
+                                        ChatColor.GREEN+""+ChatColor.BOLD+(PassivePickaxeSkillClass.NextPlayerMinerEXP.get(player) - PassivePickaxeSkillClass.GetPlayerMinerEXP.get(player)) +
+                                        ChatColor.WHITE+"EXPでレベルアップします。");
+                                return true;
+                            }else if(args[2].equalsIgnoreCase("NextLevel")) {
+                                player.sendMessage(ChatColor.GOLD+""+ChatColor.BOLD+"===== Miner_NEXT_LEVEL =====");
+                                player.sendMessage(ChatColor.WHITE+"次のレベルアップの経験値は" +
+                                        ChatColor.GREEN+""+ChatColor.BOLD+PassivePickaxeSkillClass.NextPlayerMinerLevel.get(player) +
+                                        ChatColor.WHITE+"です。");
+                                return true;
+                            }
+                        }else if(args[1].equalsIgnoreCase("Digger")) {
                         }
-                    }else if(args[1].equalsIgnoreCase("Digger")) {
-                    }
-                }else if(command.getName().equalsIgnoreCase("Set")) {
-                    if(args[1].equalsIgnoreCase("Miner")) {
-                        if(args[2].equalsIgnoreCase("EXP")) {
-                            //指定したプレイヤーのPassive SkillのMinerのEXPを設定
-                            player.sendMessage(ChatColor.GOLD+""+ChatColor.BOLD+"===== Miner_EXP =====");
-                            return true;
-                        }else if(args[2].equalsIgnoreCase("Level")){
-                            //指定したプレイヤーのPassive SkillのMinerのlevelを表示
-                            player.sendMessage(ChatColor.GOLD+""+ChatColor.BOLD+"===== Miner_LEVEL =====");
-                            return true;
+                    }else if(command.getName().equalsIgnoreCase("Set")) {
+                        if(args[1].equalsIgnoreCase("Miner")) {
+                            if(args[2].equalsIgnoreCase("EXP")) {
+                                //指定したプレイヤーのPassive SkillのMinerのEXPを設定
+                                player.sendMessage(ChatColor.GOLD+""+ChatColor.BOLD+"===== Miner_EXP =====");
+                                return true;
+                            }else if(args[2].equalsIgnoreCase("Level")){
+                                //指定したプレイヤーのPassive SkillのMinerのlevelを表示
+                                player.sendMessage(ChatColor.GOLD+""+ChatColor.BOLD+"===== Miner_LEVEL =====");
+                                return true;
+                            }
                         }
                     }
                 }
+            }else if(command.getName().equalsIgnoreCase("MC_Ability_OpenGUI")) {
+                PlayerGUI playerGUI = new PlayerGUI();
+                player.openInventory(playerGUI.inv.get(player));
+                return true;
             }
+        }else{
+            Bukkit.getLogger().info("コンソールからは実行できません!!!");
+            return true;
         }
         return false;
     }

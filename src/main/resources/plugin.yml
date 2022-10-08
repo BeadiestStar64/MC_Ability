@@ -11,3 +11,10 @@ commands:
     permission: op
     permission-message: Permission denied
     usage: 使用方法 [MC_Ability_PassiveSkill Show Miner EXP]
+
+  MC_Ability_OpenGUI:
+    aliases: open
+    description: Test GUIを開きます。
+    permission: op
+    permission-message: 権限がありません！
+    usage: 使用方法 [MC_Ability_OpenGUI]

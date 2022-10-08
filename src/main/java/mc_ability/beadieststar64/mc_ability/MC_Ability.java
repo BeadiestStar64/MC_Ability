@@ -2,6 +2,8 @@ package mc_ability.beadieststar64.mc_ability;
 
 import mc_ability.beadieststar64.mc_ability.ActiveSkill.ActivePickaxeSkillClass;
 import mc_ability.beadieststar64.mc_ability.ActiveSkill.ActiveShovelSkillClass;
+import mc_ability.beadieststar64.mc_ability.GUI.DisplayGUI;
+import mc_ability.beadieststar64.mc_ability.GUI.PlayerGUI;
 import mc_ability.beadieststar64.mc_ability.PassiveSkill.PassivePickaxeSkillClass;
 import mc_ability.beadieststar64.mc_ability.Utility.CommandClass;
 import mc_ability.beadieststar64.mc_ability.Utility.SetUpFiles;
@@ -25,6 +27,8 @@ public final class MC_Ability extends JavaPlugin implements Listener {
     public static MC_Ability plugins;
 
     static PassivePickaxeSkillClass passivePickaxeSkillClass = new PassivePickaxeSkillClass(plugins);
+    static PlayerGUI playerGUI = new PlayerGUI();
+
     static ActivePickaxeSkillClass activePickaxeSkillClass = new ActivePickaxeSkillClass(plugins);
     static SetUpFiles setUpFiles = new SetUpFiles();
 
@@ -264,6 +268,7 @@ public final class MC_Ability extends JavaPlugin implements Listener {
             //セットアップ
             activePickaxeSkillClass.SetUp(player);
             passivePickaxeSkillClass.SetMethod(player);
+            playerGUI.CreateGUI(player);
 
         }catch (Exception e) {
             ErrorLog(e);
@@ -320,6 +325,7 @@ public final class MC_Ability extends JavaPlugin implements Listener {
 
     public void RegisterCommand() {
         getCommand("MC_Ability_PassiveSkill").setExecutor(new CommandClass());
+        getCommand("MC_Ability_OpenGUI").setExecutor(new CommandClass());
     }
 
     public void RegisterEvents() {
@@ -327,5 +333,7 @@ public final class MC_Ability extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ActivePickaxeSkillClass(this), this);
         getServer().getPluginManager().registerEvents(new ActiveShovelSkillClass(this), this);
         getServer().getPluginManager().registerEvents(new PassivePickaxeSkillClass(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerGUI(), this);
+        getServer().getPluginManager().registerEvents(new DisplayGUI(this), this);
     }
 }
