@@ -6,7 +6,7 @@
 
     <groupId>MC_Ability.BeadiestStar64</groupId>
     <artifactId>MC_Ability</artifactId>
-    <version>1.0.8</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>MC_Ability</name>

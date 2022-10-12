@@ -31,9 +31,6 @@ import java.util.Map;
 import static org.bukkit.Bukkit.*;
 
 public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements Listener {
-    public ActivePickaxeSkillClass(MC_Ability plugin) {
-        super(plugin);
-    }
 
     public static Map<Player, String> PlayerOnHand = new HashMap<>();
 
@@ -48,14 +45,26 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
     public ArrayList<Material> HoeList = new ArrayList<>(Arrays.asList(Hoe));
 
     public static Map<Player, Boolean> CoolDown = new HashMap<>(); //クールダウンか判定
+    public static Map<Player, Integer> MaxCoolDownTime = new HashMap<>(); //最大クールダウン時間
+    public static Map<Player, Integer> CoolDownTime = new HashMap<>(); //クールダウンに必要な時間
     public static Map<Player, Boolean> CoolDownTimeDisplay = new HashMap<>(); //クールダウンの時間を表示
     public static Map<Player, Boolean> ActivationActiveSkill = new HashMap<>(); //スキル発動中か判定
     public static Map<Player, Boolean> ActiveSkillWait = new HashMap<>(); //スキル発動待機中か判定
     public static Map<Player, Integer> SkillWaitTimer = new HashMap<>(); //スキル待機時間を設定
     public static Map<Player, Integer> ActivationSkillCountDownTime = new HashMap<>(); //スキルの効果時間
-    public static Map<Player, Integer>  CoolDownTime = new HashMap<>(); //クールダウンに必要な時間
+    public static Map<Player, Integer> MaxActivationActiveSkillCountDownTime = new HashMap<>(); //スキルの最大効果時間
+    public static Map<Player, Boolean> IsPlayerLogOut = new HashMap<>();
 
-    public Connection con;
+    public static Map<Player, ItemStack> pickaxe = new HashMap<>();
+    public static Map<Player, Integer> GetEnchantmentLevel = new HashMap<>();
+    public static Map<Player, Integer> AddEnchantmentLevel = new HashMap<>();
+    public static Map<Player, ItemStack> BeforePickaxe = new HashMap<>();
+    public static Map<Player, Integer> AfterGetEnchantmentLevel = new HashMap<>();
+    public static Map<Player, Integer> AfterAddEnchantment = new HashMap<>();
+
+    public ActivePickaxeSkillClass(MC_Ability plugin) {
+        super(plugin);
+    }
     public final int IS_PICKAXE_SKILL_ACTIVATE_FALSE = 1;
     public final int IS_PICKAXE_SKILL_ACTIVATE_TRUE = 2;
 
@@ -77,6 +86,17 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
             return;
         }
         Flag.Set();
+
+        if(!CoolDown.containsKey(player) || !CoolDownTimeDisplay.containsKey(player) || !ActivationActiveSkill.containsKey(player) || !ActiveSkillWait.containsKey(player) || !SkillWaitTimer.containsKey(player) || !ActivationSkillCountDownTime.containsKey(player) || !CoolDownTime.containsKey(player)) {
+            CoolDown.put(player, false);
+            CoolDownTimeDisplay.put(player, false);
+            ActivationActiveSkill.put(player, false);
+            ActiveSkillWait.put(player, false);
+            SkillWaitTimer.put(player, 5);
+            ActivationSkillCountDownTime.put(player, 20);
+            CoolDownTime.put(player, 30);
+        }
+
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if(player.getInventory().getItemInOffHand().getType() == Material.AIR) {
                 ActiveSkillMethod(player);
@@ -127,7 +147,7 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, CountDownTime);
                     return;
                 }
-                if(ActivationActiveSkill.get(player)){
+                if(ActivationActiveSkill.get(player) || MC_Ability.Disable){
                     cancel();
                     ActiveSkillWait.put(player, false);
                     SkillWaitTimer.put(player, 5);
@@ -142,12 +162,6 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
 
     @EventHandler
     public void ActiveSkillMethod(BlockBreakEvent event) {
-        try {
-            con = DriverManager.getConnection("jdbc:sqlite:" + plugin.getDataFolder() + File.separator + "MC_ABILITY.db");
-            con.setAutoCommit(false);
-        }catch (Exception e) {
-            getLogger().warning(e.toString());
-        }
         Player player = event.getPlayer();
         //クールダウンか判定
         if(!CoolDown.get(player)) {
@@ -159,11 +173,9 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
                     if(PickaxeList.contains(player.getInventory().getItemInMainHand().getType())) {
                         ActivationActiveSkill.put(player, true);
                         ActiveSkillWait.put(player, false);
-                        //エンチャントを付与
-                        Map<Player, ItemStack> pickaxe = new HashMap<>();
-                        Map<Player, Integer> GetEnchantmentLevel = new HashMap<>();
-                        Map<Player, Integer> AddEnchantmentLevel = new HashMap<>();
+                        IsPlayerLogOut.put(player, true);
 
+                        //エンチャントを付与
                         pickaxe.put(player, player.getInventory().getItemInMainHand());
                         GetEnchantmentLevel.put(player, pickaxe.get(player).getEnchantmentLevel(Enchantment.DIG_SPEED));
                         AddEnchantmentLevel.put(player, (GetEnchantmentLevel.get(player)+5));
@@ -196,12 +208,8 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
                                     CoolDownStartComponent.setText(ChatColor.GOLD+""+ChatColor.BOLD+"マイナー"+
                                             ChatColor.WHITE+"を消費した....");
 
-                                    Map<Player, ItemStack> BeforePickaxe = new HashMap<>();
                                     BeforePickaxe.put(player, player.getInventory().getItemInMainHand());
                                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR,CoolDownStartComponent);
-
-                                    Map<Player, Integer> AfterGetEnchantmentLevel = new HashMap<>();
-                                    Map<Player, Integer> AfterAddEnchantment = new HashMap<>();
 
                                     AfterGetEnchantmentLevel.put(player, BeforePickaxe.get(player).getEnchantmentLevel(Enchantment.DIG_SPEED));
                                     AfterAddEnchantment.put(player,(AfterGetEnchantmentLevel.get(player)-5));
@@ -215,6 +223,10 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
 
                                     CoolDownMethod(player);
                                     return;
+                                }
+
+                                if(MC_Ability.Disable) {
+                                    cancel();
                                 }
                                 ActivationSkillCountDownTime.put(player, (ActivationSkillCountDownTime.get(player) - 1));
                             }
@@ -240,6 +252,10 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
                         player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
                         return;
                     }
+
+                    if(MC_Ability.Disable) {
+                        cancel();
+                    }
                     CoolDownTime.put(player, (CoolDownTime.get(player) - 1));
                 }
             };
@@ -253,5 +269,9 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
             CoolDownTimeDisplay.put(player, false);
             return;
         }
+    }
+
+    public void Repairing (Player player) {
+
     }
 }

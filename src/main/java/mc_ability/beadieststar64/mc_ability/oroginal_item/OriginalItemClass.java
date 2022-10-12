@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -19,14 +20,23 @@ public class OriginalItemClass extends ExtenderOriginalItemClass implements List
 
     public static ItemMeta meta;
 
+    public NamespacedKey Ability_Book = new NamespacedKey(plugin, "setting_book");
+    public NamespacedKey stamina_Lv1 = new NamespacedKey(plugin, "stamina_lv1");
+    public NamespacedKey stamina_Lv2 = new NamespacedKey(plugin, "stamina_lv2");
+
     public OriginalItemClass(MC_Ability plugin) {
         super(plugin);
     }
 
     public void OriginalItmCreate() {
+        Ability_Book = new NamespacedKey(plugin, "setting_book");
+        stamina_Lv1 = new NamespacedKey(plugin, "stamina_lv1");
+        stamina_Lv2 = new NamespacedKey(plugin, "stamina_lv2");
+
         AbilityBook();
         StaminaAnvilSkillLv1();
         StaminaAnvilLv2();
+        Bukkit.getLogger().info("アイテム登録が完了しました。");
     }
 
     public void AbilityBook() {
@@ -45,6 +55,7 @@ public class OriginalItemClass extends ExtenderOriginalItemClass implements List
         List<String> Lore = new ArrayList<>();
 
         Lore.add(ChatColor.WHITE+"MC_Abilityの魔法スキルのインベントリを表示します。" );
+        Lore.add("");
         Lore.add(ChatColor.AQUA+"Create by" + ChatColor.GOLD+""+ChatColor.BOLD+"MC_Ability");
 
         meta.setLore(Lore);
@@ -60,10 +71,10 @@ public class OriginalItemClass extends ExtenderOriginalItemClass implements List
         AbilityBook.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
         // create a NamespaceKey for your recipe
-        NamespacedKey key = new NamespacedKey(plugin, "setting_book");
+        Ability_Book = new NamespacedKey(plugin, "setting_book");
 
         // Create our custom recipe variable
-        ShapedRecipe recipe = new ShapedRecipe(key, AbilityBook);
+        ShapedRecipe recipe = new ShapedRecipe(Ability_Book, AbilityBook);
 
         // Here we will set the places. E and S can represent anything, and the letters can be anything. Beware; this is case sensitive.
         recipe.shape("EGE", "GBG", "EGE");
@@ -86,6 +97,7 @@ public class OriginalItemClass extends ExtenderOriginalItemClass implements List
         ItemMeta meta = StaminaBoostSkillLv1.getItemMeta();
         meta.setDisplayName(ChatColor.GRAY+"スタミナブースト" +
                 ChatColor.WHITE+""+ChatColor.BOLD+" Lv.1");
+
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.WHITE+"レア度:" +
                 ChatColor.GRAY+"" + ChatColor.BOLD+"ノーマル");
@@ -99,8 +111,9 @@ public class OriginalItemClass extends ExtenderOriginalItemClass implements List
         StaminaBoostSkillLv1.setItemMeta(meta);
 
         StaminaBoostSkillLv1.addUnsafeEnchantment(Enchantment.DURABILITY,10);
-        NamespacedKey key = new NamespacedKey(plugin, "stamina_lv1");
-        ShapedRecipe recipe = new ShapedRecipe(key, StaminaBoostSkillLv1);
+
+        stamina_Lv1 = new NamespacedKey(plugin, "stamina_lv1");
+        ShapedRecipe recipe = new ShapedRecipe(stamina_Lv1, StaminaBoostSkillLv1);
         recipe.shape("NNN","NBN","NNN");
         recipe.setIngredient('N', Material.NETHERITE_BLOCK);
         recipe.setIngredient('B', Material.BOOKSHELF);
@@ -126,12 +139,18 @@ public class OriginalItemClass extends ExtenderOriginalItemClass implements List
         StaminaBoostSkillLv1.setItemMeta(meta);
 
         StaminaBoostSkillLv1.addUnsafeEnchantment(Enchantment.DURABILITY,10);
-        NamespacedKey key = new NamespacedKey(plugin, "stamina_lv2");
-        ShapedRecipe recipe = new ShapedRecipe(key, StaminaBoostSkillLv1);
+        stamina_Lv2 = new NamespacedKey(plugin, "stamina_lv2");
+        ShapedRecipe recipe = new ShapedRecipe(stamina_Lv2, StaminaBoostSkillLv1);
         recipe.shape("NDN","NBN","NDN");
         recipe.setIngredient('N', Material.NETHERITE_BLOCK);
         recipe.setIngredient('B', Material.BOOKSHELF);
         recipe.setIngredient('D', Material.DIAMOND);
         Bukkit.addRecipe(recipe);
+    }
+
+    public void RemoveRecipe() {
+        Bukkit.removeRecipe(Ability_Book);
+        Bukkit.removeRecipe(stamina_Lv1);
+        Bukkit.removeRecipe(stamina_Lv2);
     }
 }

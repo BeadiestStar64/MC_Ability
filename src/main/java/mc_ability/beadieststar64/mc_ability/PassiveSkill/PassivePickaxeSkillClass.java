@@ -77,6 +77,11 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
         Block block = event.getBlock();
         SetPlayerMinerEXP.put(player, 0.0);
 
+        if(!NextPlayerMinerLevel.containsKey(player) || !OverRideMinerLevel.containsKey(player) || !bool.containsKey(player)) {
+            SetMethod(player);
+            plugin.InsertPassivePickaxeSkillQuery(player);
+        }
+
         if(PickaxeList.contains(player.getInventory().getItemInMainHand().getType())) {
             if(TerracottaList.contains(block.getType())) {
                 SetPlayerMinerEXP.put(player, (SetPlayerMinerEXP.get(player)+2.0));
@@ -157,7 +162,7 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
                     cancel();
                     OverRideMinerLevel.put(player, false);
                     bool.put(player, false);
-                    DisplayMinerBossBarTime.put(player, 0.0);
+                    DisplayMinerBossBarTime.put(player, 5.0);
                     return;
                 }
             }
