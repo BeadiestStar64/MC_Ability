@@ -36,6 +36,7 @@ public class OriginalItemClass extends ExtenderOriginalItemClass implements List
         AbilityBook();
         StaminaAnvilSkillLv1();
         StaminaAnvilLv2();
+        
         Bukkit.getLogger().info("アイテム登録が完了しました。");
     }
 
@@ -149,8 +150,6 @@ public class OriginalItemClass extends ExtenderOriginalItemClass implements List
     }
 
     public void RemoveRecipe() {
-        Bukkit.removeRecipe(Ability_Book);
-        Bukkit.removeRecipe(stamina_Lv1);
-        Bukkit.removeRecipe(stamina_Lv2);
+
     }
 }

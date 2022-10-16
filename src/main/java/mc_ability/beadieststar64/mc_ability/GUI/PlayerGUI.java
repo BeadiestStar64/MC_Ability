@@ -1,5 +1,6 @@
 package mc_ability.beadieststar64.mc_ability.GUI;
 
+import mc_ability.beadieststar64.mc_ability.MC_Ability;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -8,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -17,14 +19,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PlayerGUI implements Listener {
+public class PlayerGUI extends ExtenderForGUI implements Listener {
     private String GUITitle;
     private Integer GUISize;
     public static Map<Player, Inventory> inv = new HashMap<>();
+    public static Map<Player, String> Data = new HashMap<>();
+    public static Map<String, ItemStack[]> menus = new HashMap<String, ItemStack[]>();
 
-    public void CreateGUI(Player player) {
+    public PlayerGUI(MC_Ability plugin) {
+        super(plugin);
+    }
 
-        inv.put(player, Bukkit.createInventory(null, 9, ChatColor.GOLD+"Test GUI"));
+    public void CreateGUI() {
+        inv = new HashMap<>();
+        Bukkit.getLogger().info("[MC_Ability] GUIの作成に成功しました。");
+    }
+
+    public void SetGUI(Player player) {
+
+        inv.put(player, Bukkit.createInventory(player, 9, ChatColor.GOLD+"Test GUI"));
 
         Map<Player, ItemStack> item = new HashMap<>();
         Map<Player, ItemMeta> meta = new HashMap<>();
@@ -82,4 +95,25 @@ public class PlayerGUI implements Listener {
         }
     }
 
+    public void saveInvs() {
+        for(Map.Entry<String, ItemStack[]> entry : menus.entrySet()) {
+            plugin.getConfig().set("data." + entry.getKey(), entry.getValue());
+        }
+        plugin.saveConfig();
+    }
+
+    public void restoreInvs() {
+        plugin.getConfig().getConfigurationSection("data").getKeys(false).forEach(key ->{
+            @SuppressWarnings("unchecked")
+            ItemStack[] content = ((List<ItemStack>) plugin.getConfig().get("data." + key)).toArray(new ItemStack[0]);
+            menus.put(key, content);
+        });
+    }
+
+    @EventHandler
+    public void onGUIClose(InventoryCloseEvent event) {
+        if(event.getView().getTitle().contains(event.getPlayer().getName() + "'s Private GUI")) {
+            menus.put(event.getPlayer().getUniqueId().toString(), event.getInventory().getContents());
+        }
+    }
 }

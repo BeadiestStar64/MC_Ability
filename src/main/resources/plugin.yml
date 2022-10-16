@@ -18,3 +18,5 @@ commands:
     permission: op
     permission-message: 権限がありません！
     usage: 使用方法 [MC_Ability_OpenGUI]
+
+  pv:

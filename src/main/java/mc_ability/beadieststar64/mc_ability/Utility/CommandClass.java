@@ -10,6 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -23,8 +24,9 @@ public class CommandClass implements CommandExecutor, TabCompleter {
     //改良必須
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Command command, @NotNull String label, String[] args) {
-        Player player = (Player) sender;
-        if(sender == player){
+        Player player = null;
+        if(sender instanceof Player){
+            player = (Player) sender;
             if(command.getName().equalsIgnoreCase("MC_Ability_PassiveSkill")) {
                 if(args.length > 0) {
                     if(args[0].equalsIgnoreCase("Show")) {
@@ -76,12 +78,29 @@ public class CommandClass implements CommandExecutor, TabCompleter {
                     }
                 }
             }else if(command.getName().equalsIgnoreCase("MC_Ability_OpenGUI")) {
-                PlayerGUI playerGUI = new PlayerGUI();
+                PlayerGUI playerGUI = new PlayerGUI(plugin);
+                if(!playerGUI.inv.containsKey(player)) {
+                    playerGUI.SetGUI(player);
+                }
                 player.openInventory(playerGUI.inv.get(player));
+                return true;
+            }else if(command.getName().equalsIgnoreCase("pv")) {
+                if(!(sender instanceof Player)) {
+                    sender.sendMessage("コンソールからは実行出来ません!!");
+                    return true;
+                }
+
+                Inventory inv = Bukkit.createInventory(player, 9, player.getName() + "'s Private GUI");
+
+                if(PlayerGUI.menus.containsKey(player.getUniqueId().toString())) {
+                    inv.setContents(PlayerGUI.menus.get(player.getUniqueId().toString()));
+                }
+
+                player.openInventory(inv);
                 return true;
             }
         }else{
-            Bukkit.getLogger().info("コンソールからは実行できません!!!");
+            sender.sendMessage("コンソールからは実行できません!!!");
             return true;
         }
         return false;

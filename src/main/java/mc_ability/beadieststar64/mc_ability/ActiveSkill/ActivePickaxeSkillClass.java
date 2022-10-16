@@ -76,6 +76,9 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
         SkillWaitTimer.put(player, 5);
         ActivationSkillCountDownTime.put(player, 20);
         CoolDownTime.put(player, 30);
+        MaxCoolDownTime.put(player, 30);
+        MaxActivationActiveSkillCountDownTime.put(player, 20);
+        IsPlayerLogOut.put(player, false);
     }
 
     @EventHandler
@@ -173,7 +176,6 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
                     if(PickaxeList.contains(player.getInventory().getItemInMainHand().getType())) {
                         ActivationActiveSkill.put(player, true);
                         ActiveSkillWait.put(player, false);
-                        IsPlayerLogOut.put(player, true);
 
                         //エンチャントを付与
                         pickaxe.put(player, player.getInventory().getItemInMainHand());
@@ -194,6 +196,9 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
                                 ChatColor.WHITE+"発動!");
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR,ActiveSkillComponent);
                         player.playSound(player.getLocation(), Sound.ITEM_TRIDENT_RIPTIDE_3, 1, 1);
+
+                        IsPlayerLogOut.put(player, true);
+
                         BukkitRunnable runnable = new BukkitRunnable() {
                             @Override
                             public void run() {
@@ -202,6 +207,7 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
 
                                     ActivationActiveSkill.put(player, false);
                                     CoolDown.put(player, true);
+                                    IsPlayerLogOut.put(player, false);
                                     ActivationSkillCountDownTime.put(player, 20);
 
                                     TextComponent CoolDownStartComponent = new TextComponent();
@@ -271,7 +277,22 @@ public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements List
         }
     }
 
-    public void Repairing (Player player) {
-
+    public void Restore (Player player) {
+        if(PickaxeList.contains(player.getInventory().getItemInMainHand().getType())) {
+            //付与していたエンチャントレベルを取得
+            pickaxe.put(player, player.getInventory().getItemInMainHand());
+            GetEnchantmentLevel.put(player, pickaxe.get(player).getEnchantmentLevel(Enchantment.DIG_SPEED));
+            AddEnchantmentLevel.put(player, (GetEnchantmentLevel.get(player)- 5));
+            pickaxe.get(player).removeEnchantment(Enchantment.DIG_SPEED);
+            if(AddEnchantmentLevel.get(player) <= 5 && AddEnchantmentLevel.get(player) > 0) {
+                pickaxe.get(player).addEnchantment(Enchantment.DIG_SPEED,AddEnchantmentLevel.get(player));
+            }else if(AddEnchantmentLevel.get(player) > 5){
+                pickaxe.get(player).addUnsafeEnchantment(Enchantment.DIG_SPEED,AddEnchantmentLevel.get(player));//バニラ以上のエンチャントレベル付与
+            }
+            player.getInventory().setItemInMainHand(pickaxe.get(player));
+            CoolDown.put(player, true);
+            ActivationActiveSkill.put(player, false);
+            CoolDownMethod(player);
+        }
     }
 }

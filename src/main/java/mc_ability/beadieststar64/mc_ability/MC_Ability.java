@@ -5,7 +5,6 @@ import mc_ability.beadieststar64.mc_ability.GUI.DisplayGUI;
 import mc_ability.beadieststar64.mc_ability.GUI.PlayerGUI;
 import mc_ability.beadieststar64.mc_ability.PassiveSkill.PassivePickaxeSkillClass;
 import mc_ability.beadieststar64.mc_ability.Utility.CommandClass;
-import mc_ability.beadieststar64.mc_ability.Utility.SetUpFiles;
 import mc_ability.beadieststar64.mc_ability.oroginal_item.OriginalItemClass;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -27,34 +26,30 @@ public final class MC_Ability extends JavaPlugin implements Listener {
     public static MC_Ability plugins;
 
     public static PassivePickaxeSkillClass passivePickaxeSkillClass = new PassivePickaxeSkillClass(plugins);
-    public static PlayerGUI playerGUI = new PlayerGUI();
+    public static PlayerGUI playerGUI = new PlayerGUI(plugins);
 
     public static ActivePickaxeSkillClass activePickaxeSkillClass = new ActivePickaxeSkillClass(plugins);
 
-    public static SetUpFiles setUpFiles = new SetUpFiles();
-
-    public int MaxPlayers = 1;
+    public static int MaxPlayers = 1;
     public static boolean IsOnlinePlayer = false;
     public static boolean Disable = false;
+    public static Map<Player, Integer> GUICount = new HashMap<>();
+    public static Map<Player, Boolean> IsPlayerLogOut = new HashMap<>();
 
     //プラグインバージョン設定
-    private final String version = "1.1.0";
-
+    private final String version = "1.1.1";
 
     @Override
     public void onEnable() {
 
         plugins = this;
 
-        //イベント登録
-        RegisterEvents();
+        this.saveDefaultConfig();
 
-        //コマンド登録
-        RegisterCommand();
-
-        //MC_Abilityオリジナルアイテム追加
-        OriginalItemClass originalItemClass = new OriginalItemClass(plugins);
-        originalItemClass.OriginalItmCreate();
+        if(this.getConfig().contains("data")) {
+            PlayerGUI playerGUI = new PlayerGUI(plugins);
+            playerGUI.restoreInvs();
+        }
 
         getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "MC_Ability has been activate!");
 
@@ -70,12 +65,6 @@ public final class MC_Ability extends JavaPlugin implements Listener {
             if (!configFile.exists()) {
                 this.saveDefaultConfig();
             }
-
-            //SQLiteロック回避用のファイル作成
-            SetUpFiles.SetUp();
-            SetUpFiles.get().addDefault("MC_Ability", "player:");
-            SetUpFiles.get().options().copyDefaults(true);
-            SetUpFiles.SaveFile();
 
             // JDBCドライバーの指定
             Class.forName("org.sqlite.JDBC");
@@ -240,6 +229,19 @@ public final class MC_Ability extends JavaPlugin implements Listener {
                 ErrorLog(e);
             }
             getServer().getConsoleSender().sendMessage("テーブル処理が完了しました");
+
+            //イベント登録
+            RegisterEvents();
+
+            //コマンド登録
+            RegisterCommand();
+
+            //MC_Abilityオリジナルアイテム追加
+            OriginalItemClass originalItemClass = new OriginalItemClass(plugins);
+            originalItemClass.OriginalItmCreate();
+
+            PlayerGUI playerGUI = new PlayerGUI(this);
+            playerGUI.CreateGUI();
 
         }catch (Exception e) {
             ErrorLog(e);
@@ -610,9 +612,10 @@ public final class MC_Ability extends JavaPlugin implements Listener {
             //プレイヤーのアクティブスキルデータを取得
             InsertActivePickaxeSkillQuery(player);
 
-            if(ActivePickaxeSkillClass.IsPlayerLogOut.get(player)) {
+            getLogger().info("test:" + IsPlayerLogOut.get(player));
+            if(IsPlayerLogOut.get(player) == true) {
                 //ここでスキル前に修復
-                activePickaxeSkillClass.Repairing(player);
+                activePickaxeSkillClass.Restore(player);
             }
 
             MaxPlayers++;
@@ -620,7 +623,9 @@ public final class MC_Ability extends JavaPlugin implements Listener {
             //セットアップ
             activePickaxeSkillClass.SetUp(player);
             passivePickaxeSkillClass.SetMethod(player);
-            playerGUI.CreateGUI(player);
+            playerGUI.SetGUI(player);
+
+            MaxPlayers++;
 
         }catch (Exception e) {
             ErrorLog(e);
@@ -630,6 +635,10 @@ public final class MC_Ability extends JavaPlugin implements Listener {
     @EventHandler
     public void PlayerLeaveEvent(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        Disable = true;
+        GUICount.put(player, 1);
+
+        PlayerGUI playerGUI = new PlayerGUI(this);
 
         UpdataPassivePickaxeSkill(player);
         UpdataActivePickaxeSkill(player);
@@ -651,6 +660,11 @@ public final class MC_Ability extends JavaPlugin implements Listener {
         OriginalItemClass originalItemClass = new OriginalItemClass(plugins);
         originalItemClass.RemoveRecipe();
 
+        if(!PlayerGUI.menus.isEmpty()) {
+            PlayerGUI playerGUI = new PlayerGUI(plugins);
+            playerGUI.saveInvs();
+        }
+
         getLogger().info("プラグインが停止しました");
         getServer().getConsoleSender().sendMessage(ChatColor.RED + "プラグインを終了します");
     }
@@ -658,17 +672,19 @@ public final class MC_Ability extends JavaPlugin implements Listener {
     public void RegisterCommand() {
         getCommand("MC_Ability_PassiveSkill").setExecutor(new CommandClass());
         getCommand("MC_Ability_OpenGUI").setExecutor(new CommandClass());
+        getCommand("pv").setExecutor(new CommandClass());
     }
 
     public void RegisterEvents() {
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new ActivePickaxeSkillClass(this), this);
         getServer().getPluginManager().registerEvents(new PassivePickaxeSkillClass(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerGUI(), this);
+        getServer().getPluginManager().registerEvents(new PlayerGUI(this), this);
         getServer().getPluginManager().registerEvents(new DisplayGUI(this), this);
     }
 
     public void InsertPassivePickaxeSkillQuery (Player player) {
+        getLogger().info(player.getName() + "さんのPassive Skill情報を参照します。");
         String SQL = ("SELECT PLAYER_MINER_LEVEL,PLAYER_MINER_EXP,PLAYER_NEXT_MINER_LEVEL,PLAYER_NEXT_MINER_EXP FROM PASSIVE_SKILL WHERE UUID=?");
         try {
             PreparedStatement prepStmt = con.prepareStatement(SQL);
@@ -690,13 +706,12 @@ public final class MC_Ability extends JavaPlugin implements Listener {
     }
 
     public void InsertActivePickaxeSkillQuery (Player player) {
-        getLogger().info("Active Skill情報を参照します。");
+        getLogger().info(player.getName() + "さんのActive Skill情報を参照します。");
         String SQL = ("SELECT IS_MINER_ACTIVATE,REMAINING_MINER_TIME,MAX_MINER_TIME,MINER_ENCHANTMENT_LEVEL,IS_MINER_COOL_DOWN,REMAINING_COOL_DOWN_TIME,MAX_COOL_DOWN_TIME,IS_PLAYER_LOG_OUT FROM ACTIVE_SKILL WHERE UUID=?");
 
         try {
             PreparedStatement prepStmt = con.prepareStatement(SQL);
             prepStmt.setString(1, player.getUniqueId().toString());
-            getLogger().info("SQL文は" + prepStmt);
             ResultSet RS = prepStmt.executeQuery();
             con.commit();
             if (RS.next()) {
@@ -705,42 +720,28 @@ public final class MC_Ability extends JavaPlugin implements Listener {
                 }else if(RS.getInt(1) == 1) {
                     ActivePickaxeSkillClass.ActivationActiveSkill.put(player, true);
                 }
-                getLogger().info("ActivationActiveSkillは" + ActivePickaxeSkillClass.ActivationActiveSkill + "です。");
-
                 ActivePickaxeSkillClass.ActivationSkillCountDownTime.put(player, RS.getInt(2));
-                getLogger().info("ActivationSkillCountDownTimeは" + ActivePickaxeSkillClass.ActivationSkillCountDownTime + "です。");
-
                 ActivePickaxeSkillClass.MaxActivationActiveSkillCountDownTime.put(player, RS.getInt(3));
-                getLogger().info("MaxActivationActiveSkillCountDownTimeは" + ActivePickaxeSkillClass.MaxActivationActiveSkillCountDownTime + "です。");
-
                 ActivePickaxeSkillClass.AddEnchantmentLevel.put(player, RS.getInt(4));
-                getLogger().info("AddEnchantmentLevelは" + ActivePickaxeSkillClass.AddEnchantmentLevel + "です。");
-
                 if(RS.getInt(5) == 0) {
                     ActivePickaxeSkillClass.CoolDown.put(player, false);
                 }else if(RS.getInt(5) == 1) {
                     ActivePickaxeSkillClass.CoolDown.put(player, true);
                 }
-                getLogger().info("CoolDownは" + ActivePickaxeSkillClass.CoolDown + "です。");
-
                 ActivePickaxeSkillClass.CoolDownTime.put(player, RS.getInt(6));
-                getLogger().info("CoolDownTimeは" + ActivePickaxeSkillClass.CoolDownTime + "です。");
-
                 ActivePickaxeSkillClass.MaxCoolDownTime.put(player, RS.getInt(7));
-                getLogger().info("MaxCoolDownTimeは" + ActivePickaxeSkillClass.MaxCoolDownTime + "です。");
-
                 if(RS.getInt(8) == 0) {
-                    ActivePickaxeSkillClass.IsPlayerLogOut.put(player, false);
+                    IsPlayerLogOut.put(player, false);
                 }else if(RS.getInt(8) == 1) {
-                    ActivePickaxeSkillClass.IsPlayerLogOut.put(player, true);
+                    IsPlayerLogOut.put(player, true);
                 }
-                getLogger().info("IsPlayerLogOutは" + ActivePickaxeSkillClass.IsPlayerLogOut + "です。");
             }else{
-                getLogger().info("これはやばい！やばいですよ！");
+                getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "[MC_Ability]" + ChatColor.RED +"エラーが発生しました!!!");
+                getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "原因:" + ChatColor.RED + player.getName());
             }
             RS.close();
             prepStmt.close();
-
+            getLogger().info(player.getName() + "さんのPassive Skill情報を挿入しました。");
         }catch (Exception e) {
             ErrorLog(e);
         }
@@ -779,72 +780,64 @@ public final class MC_Ability extends JavaPlugin implements Listener {
             prepStmt.close();
             passivePickaxeSkillClass.DeleteHashMap(player);
 
-            getLogger().info(player + "のPassive Skill情報を更新しました。");
+            getLogger().info(player.getName() + "さんのPassive Skill情報を更新しました。");
         }catch (Exception e) {
             ErrorLog(e);
         }
     }
 
     public void UpdataActivePickaxeSkill(Player player) {
-        getLogger().info(player + "のActive Skill情報を更新します。");
+        getLogger().info(player + "さんのActive Skill情報を更新します。");
         try {
-            getLogger().info("IS_MINER_ACTIVATEは" + ActivePickaxeSkillClass.ActivationActiveSkill.get(player) + "です。");
             PreparedStatement prepStmt = con.prepareStatement("UPDATE ACTIVE_SKILL SET IS_MINER_ACTIVATE=? WHERE UUID=?" );
             Map<Player, Integer> IsMinerActivateBoolean = new HashMap<>();
             IsMinerActivateBoolean.put(player, 1);
-            if(ActivePickaxeSkillClass.ActivationActiveSkill.get(player)) {
+            if(!ActivePickaxeSkillClass.ActivationActiveSkill.get(player)) {
                 IsMinerActivateBoolean.put(player, 0);
             }
             prepStmt.setInt(1,IsMinerActivateBoolean.get(player));
             prepStmt.setString(2,player.getUniqueId().toString());
             prepStmt.addBatch();
 
-            getLogger().info("REMAINING_MINER_TIMEは" + ActivePickaxeSkillClass.ActivationSkillCountDownTime.get(player) + "です。");
             PreparedStatement prepStmt2 = con.prepareStatement("UPDATE ACTIVE_SKILL SET REMAINING_MINER_TIME=? WHERE UUID=?");
             prepStmt2.setInt(1, ActivePickaxeSkillClass.ActivationSkillCountDownTime.get(player));
             prepStmt2.setString(2,player.getUniqueId().toString());
             prepStmt2.addBatch();
 
-            getLogger().info("MAX_MINER_TIMEは" + ActivePickaxeSkillClass.MaxActivationActiveSkillCountDownTime.get(player) + "です。");
             PreparedStatement prepStmt3 = con.prepareStatement("UPDATE ACTIVE_SKILL SET MAX_MINER_TIME=? WHERE UUID=?");
             prepStmt3.setInt(1, ActivePickaxeSkillClass.MaxActivationActiveSkillCountDownTime.get(player));
             prepStmt3.setString(2,player.getUniqueId().toString());
             prepStmt3.addBatch();
 
-            getLogger().info("MINER_ENCHANTMENT_LEVELは" + ActivePickaxeSkillClass.AddEnchantmentLevel.get(player) + "です。");
             PreparedStatement prepStmt4 = con.prepareStatement("UPDATE ACTIVE_SKILL SET MINER_ENCHANTMENT_LEVEL=? WHERE UUID=?");
             prepStmt4.setInt(1, ActivePickaxeSkillClass.AddEnchantmentLevel.get(player));
             prepStmt4.setString(2,player.getUniqueId().toString());
             prepStmt4.addBatch();
 
-            getLogger().info("IS_MINER_COOL_DOWNは" + ActivePickaxeSkillClass.CoolDown.get(player) + "です。");
             PreparedStatement prepStmt5 = con.prepareStatement("UPDATE ACTIVE_SKILL SET IS_MINER_COOL_DOWN=? WHERE UUID=?");
             Map<Player, Integer> IsMinerCoolDownBoolean = new HashMap<>();
             IsMinerCoolDownBoolean.put(player, 1);
-            if(ActivePickaxeSkillClass.CoolDown.get(player)) {
+            if(!ActivePickaxeSkillClass.CoolDown.get(player)) {
                 IsMinerCoolDownBoolean.put(player, 0);
             }
             prepStmt5.setInt(1, IsMinerCoolDownBoolean.get(player));
             prepStmt5.setString(2, player.getUniqueId().toString());
             prepStmt5.addBatch();
 
-            getLogger().info("REMAINING_COOL_DOWN_TIMEは" + ActivePickaxeSkillClass.CoolDownTime.get(player) + "です。");
             PreparedStatement prepStmt6 = con.prepareStatement("UPDATE ACTIVE_SKILL SET REMAINING_COOL_DOWN_TIME=? WHERE UUID=?");
             prepStmt6.setInt(1, ActivePickaxeSkillClass.CoolDownTime.get(player));
             prepStmt6.setString(2,player.getUniqueId().toString());
             prepStmt6.addBatch();
 
-            getLogger().info("MAX_COOL_DOWN_TIMEは" + ActivePickaxeSkillClass.MaxCoolDownTime.get(player) + "です。");
             PreparedStatement prepStmt7 = con.prepareStatement("UPDATE ACTIVE_SKILL SET MAX_COOL_DOWN_TIME=? WHERE UUID=?");
             prepStmt7.setInt(1, ActivePickaxeSkillClass.MaxCoolDownTime.get(player));
             prepStmt7.setString(2,player.getUniqueId().toString());
             prepStmt7.addBatch();
 
-            getLogger().info("IS_PLAYER_LOG_OUTは" + ActivePickaxeSkillClass.IsPlayerLogOut.get(player) + "です。");
             PreparedStatement prepStmt8 = con.prepareStatement("UPDATE ACTIVE_SKILL SET IS_PLAYER_LOG_OUT=? WHERE UUID=?");
             Map<Player, Integer> IsPlayerLogOut = new HashMap<>();
             IsPlayerLogOut.put(player, 1);
-            if(ActivePickaxeSkillClass.IsPlayerLogOut.get(player)) {
+            if(!ActivePickaxeSkillClass.IsPlayerLogOut.get(player)) {
                 IsPlayerLogOut.put(player, 0);
             }
             prepStmt8.setInt(1, IsPlayerLogOut.get(player));
@@ -864,10 +857,60 @@ public final class MC_Ability extends JavaPlugin implements Listener {
             prepStmt.close();
             passivePickaxeSkillClass.DeleteHashMap(player);
 
-            getLogger().info(player + "のActive Skill情報を更新しました。");
+            getLogger().info(player.getName() + "さんのActive Skill情報を更新しました。");
         }catch (Exception e) {
             ErrorLog(e);
         }
     }
 
+    public void PutGUI(Player player) {
+        GUICount.put(player, (GUICount.get(player) + 1));
+        String SQL = ("");
+        String InsertData = ("");
+
+        switch (GUICount.get(player)) {
+            case 1:
+                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_MATERIAL=? WHERE UUID=?");
+                PlayerGUI.inv.get(player);
+                break;
+            case 2:
+                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_NAME WHERE=? UUID=?");
+                break;
+            case 3:
+                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_LORE1 WHERE=? UUID=?");
+                break;
+            case 4:
+                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_LORE2 WHERE=? UUID=?");
+                break;
+            case 5:
+                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_LORE3 WHERE=? UUID=?");
+                break;
+            case 6:
+                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_LORE4 WHERE=? UUID=?");
+                break;
+            case 7:
+                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_LORE5 WHERE=? UUID=?");
+                break;
+            case 8:
+                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_LORE6 WHERE=? UUID=?");
+                break;
+            case 9:
+                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME=? WHERE UUID=?");
+                break;
+            case 10:
+                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL=? WHERE UUID=?");
+                break;
+            case 11:
+                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_REGISTER_KEY=? WHERE UUID=?");
+                break;
+        }
+
+        try {
+            PreparedStatement prepStmt = con.prepareStatement(SQL);
+            prepStmt.setString(1, InsertData);
+            prepStmt.setString(2, player.getUniqueId().toString());
+        }catch (Exception e) {
+            ErrorLog(e);
+        }
+    }
 }
