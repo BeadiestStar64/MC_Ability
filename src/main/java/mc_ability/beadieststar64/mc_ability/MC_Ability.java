@@ -54,9 +54,9 @@ public final class MC_Ability extends JavaPlugin implements Listener {
             playerGUI.restoreInvs();
         }
 
-        getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "MC_Ability has been activate!");
+        getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "[MC_Ability]" + ChatColor.AQUA + "MC_Ability has been activate!");
 
-        getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "Version is" +
+        getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "[MC_Ability] Version is" +
                 ChatColor.RED + version +
                 ChatColor.WHITE + ".");
 

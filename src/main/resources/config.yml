@@ -8,5 +8,4 @@ DataBase:
   Login_Password: "Your mysql's password"
   Host_Name: "localhost"
   Port: 3306
-  TimeZone: "JTS"
   DataBaseName: "mc_ability"
