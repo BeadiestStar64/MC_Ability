@@ -20,10 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 public class PlayerGUI extends ExtenderForGUI implements Listener {
-    private String GUITitle;
-    private Integer GUISize;
+
     public static Map<Player, Inventory> inv = new HashMap<>();
-    public static Map<Player, String> Data = new HashMap<>();
     public static Map<String, ItemStack[]> menus = new HashMap<String, ItemStack[]>();
 
     public PlayerGUI(MC_Ability plugin) {
@@ -95,6 +93,7 @@ public class PlayerGUI extends ExtenderForGUI implements Listener {
         }
     }
 
+    //DB化
     public void saveInvs() {
         for(Map.Entry<String, ItemStack[]> entry : menus.entrySet()) {
             plugin.getConfig().set("data." + entry.getKey(), entry.getValue());
@@ -102,6 +101,7 @@ public class PlayerGUI extends ExtenderForGUI implements Listener {
         plugin.saveConfig();
     }
 
+    //DB化
     public void restoreInvs() {
         plugin.getConfig().getConfigurationSection("data").getKeys(false).forEach(key ->{
             @SuppressWarnings("unchecked")

@@ -1,6 +1,7 @@
 package mc_ability.beadieststar64.mc_ability.PassiveSkill;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import jdk.jfr.Enabled;
+import mc_ability.beadieststar64.mc_ability.DataBase.SQLite;
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,6 +39,8 @@ import static org.bukkit.Bukkit.getLogger;
 import static org.bukkit.Bukkit.getPlayer;
 
 public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Listener {
+
+    public static SQLite sqLite;
 
     public Material[] Pickaxe = {Material.WOODEN_PICKAXE, Material.STONE_PICKAXE, Material.IRON_PICKAXE, Material.GOLDEN_PICKAXE, Material.DIAMOND_PICKAXE, Material.NETHERITE_PICKAXE};
     public ArrayList<Material> PickaxeList = new ArrayList<>(Arrays.asList(Pickaxe));
@@ -79,7 +82,7 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
 
         if(!NextPlayerMinerLevel.containsKey(player) || !OverRideMinerLevel.containsKey(player) || !bool.containsKey(player)) {
             SetMethod(player);
-            plugin.InsertPassivePickaxeSkillQuery(player);
+            sqLite.InsertPassivePickaxeSkillQuery(player);
         }
 
         if(PickaxeList.contains(player.getInventory().getItemInMainHand().getType())) {

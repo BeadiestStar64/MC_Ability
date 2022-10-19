@@ -1,4 +1,4 @@
-package mc_ability.beadieststar64.mc_ability.oroginal_item;
+package mc_ability.beadieststar64.mc_ability.Original_Item;
 
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
 import org.bukkit.Bukkit;
@@ -6,7 +6,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;

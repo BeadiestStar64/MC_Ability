@@ -1,4 +1,4 @@
-package mc_ability.beadieststar64.mc_ability.oroginal_item;
+package mc_ability.beadieststar64.mc_ability.Original_Item;
 
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
 

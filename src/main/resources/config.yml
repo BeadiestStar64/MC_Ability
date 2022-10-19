@@ -1,0 +1,12 @@
+DataBase:
+  Type: "SQLite"
+  ###
+  # JP: MySQLを使用する場合は、以下の値を設定してください。
+  # EN: If you use MySQL, please set the following values.
+  ###
+  Login_User: "root"
+  Login_Password: "Your mysql's password"
+  Host_Name: "localhost"
+  Port: 3306
+  TimeZone: "JTS"
+  DataBaseName: "mc_ability"
