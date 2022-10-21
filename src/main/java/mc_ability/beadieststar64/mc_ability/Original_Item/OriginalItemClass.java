@@ -56,7 +56,7 @@ public class OriginalItemClass extends ExtenderOriginalItemClass implements List
 
         Lore.add(ChatColor.WHITE+"MC_Abilityの魔法スキルのインベントリを表示します。" );
         Lore.add("");
-        Lore.add(ChatColor.AQUA+"Create by" + ChatColor.GOLD+""+ChatColor.BOLD+"MC_Ability");
+        Lore.add(ChatColor.AQUA+"Create by " + ChatColor.GOLD+""+ChatColor.BOLD+"MC_Ability");
 
         meta.setLore(Lore);
 
@@ -95,7 +95,7 @@ public class OriginalItemClass extends ExtenderOriginalItemClass implements List
     public void StaminaAnvilSkillLv1() {
         ItemStack StaminaBoostSkillLv1 = new ItemStack(Material.ANVIL);
         ItemMeta meta = StaminaBoostSkillLv1.getItemMeta();
-        meta.setDisplayName(ChatColor.GRAY+"スタミナブースト" +
+        meta.setDisplayName(ChatColor.GRAY+"スタミナカッター" +
                 ChatColor.WHITE+""+ChatColor.BOLD+" Lv.1");
 
         List<String> lore = new ArrayList<>();
@@ -105,7 +105,7 @@ public class OriginalItemClass extends ExtenderOriginalItemClass implements List
         lore.add(ChatColor.WHITE+"魔法スキルの一つ");
         lore.add(ChatColor.WHITE+"アクティベートされると");
         lore.add(ChatColor.GOLD+""+ChatColor.BOLD+"全ての道具の耐久値減少が10%低下" + ChatColor.WHITE+"する");
-        lore.add(ChatColor.AQUA+"Create by" + ChatColor.GOLD+""+ChatColor.BOLD+"MC_Ability");
+        lore.add(ChatColor.AQUA+"Create by " + ChatColor.GOLD+""+ChatColor.BOLD+"MC_Ability");
         meta.setLore(lore);
 
         StaminaBoostSkillLv1.setItemMeta(meta);
@@ -133,7 +133,7 @@ public class OriginalItemClass extends ExtenderOriginalItemClass implements List
         lore.add(ChatColor.WHITE+"魔法スキルの一つ");
         lore.add(ChatColor.WHITE+"アクティベートされると");
         lore.add(ChatColor.GOLD+""+ChatColor.BOLD+"全ての道具の耐久値減少が20%低下" + ChatColor.WHITE+"する");
-        lore.add(ChatColor.AQUA+"Create by" + ChatColor.GOLD+""+ChatColor.BOLD+"MC_Ability");
+        lore.add(ChatColor.AQUA+"Create by " + ChatColor.GOLD+""+ChatColor.BOLD+"MC_Ability");
         meta.setLore(lore);
 
         StaminaBoostSkillLv1.setItemMeta(meta);

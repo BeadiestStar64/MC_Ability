@@ -3,7 +3,6 @@ package mc_ability.beadieststar64.mc_ability;
 import mc_ability.beadieststar64.mc_ability.ActiveSkill.ActivePickaxeSkillClass;
 import mc_ability.beadieststar64.mc_ability.DataBase.MySQL;
 import mc_ability.beadieststar64.mc_ability.DataBase.SQLite;
-import mc_ability.beadieststar64.mc_ability.GUI.DisplayGUI;
 import mc_ability.beadieststar64.mc_ability.GUI.PlayerGUI;
 import mc_ability.beadieststar64.mc_ability.PassiveSkill.PassivePickaxeSkillClass;
 import mc_ability.beadieststar64.mc_ability.Utility.CommandClass;
@@ -42,17 +41,12 @@ public final class MC_Ability extends JavaPlugin implements Listener {
     public static int UseDateBase = 0;
 
     //プラグインバージョン設定
-    private final String version = "1.2.2";
+    private final String version = "1.2.4";
 
     @Override
     public void onEnable() {
 
         plugins = this;
-
-        if(this.getConfig().contains("data")) {
-            PlayerGUI playerGUI = new PlayerGUI(plugins);
-            playerGUI.restoreInvs();
-        }
 
         getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "[MC_Ability]" + ChatColor.AQUA + "MC_Ability has been activate!");
 
@@ -172,11 +166,6 @@ public final class MC_Ability extends JavaPlugin implements Listener {
         OriginalItemClass originalItemClass = new OriginalItemClass(plugins);
         originalItemClass.RemoveRecipe();
 
-        if(!PlayerGUI.menus.isEmpty()) {
-            PlayerGUI playerGUI = new PlayerGUI(plugins);
-            playerGUI.saveInvs();
-        }
-
         getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "[MC_Ability]" + ChatColor.RED + "プラグインを終了します");
 
         switch (UseDateBase) {
@@ -194,7 +183,6 @@ public final class MC_Ability extends JavaPlugin implements Listener {
     public void RegisterCommand() {
         getCommand("MC_Ability_PassiveSkill").setExecutor(new CommandClass());
         getCommand("MC_Ability_OpenGUI").setExecutor(new CommandClass());
-        getCommand("pv").setExecutor(new CommandClass());
     }
 
     public void RegisterEvents() {
@@ -202,7 +190,6 @@ public final class MC_Ability extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ActivePickaxeSkillClass(this), this);
         getServer().getPluginManager().registerEvents(new PassivePickaxeSkillClass(this), this);
         getServer().getPluginManager().registerEvents(new PlayerGUI(this), this);
-        getServer().getPluginManager().registerEvents(new DisplayGUI(this), this);
     }
 
     /*

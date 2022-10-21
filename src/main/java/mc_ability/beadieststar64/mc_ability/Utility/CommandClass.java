@@ -13,19 +13,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class CommandClass implements CommandExecutor, TabCompleter {
 
-    public  MC_Ability plugin;
+    public MC_Ability plugin;
 
     //改良必須
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Command command, @NotNull String label, String[] args) {
         Player player = null;
-        if(sender instanceof Player){
+        if(!(sender instanceof Player)) {
+            sender.sendMessage("コンソールからは実行出来ません!!");
+            return true;
+        }else {
+
             player = (Player) sender;
             if(command.getName().equalsIgnoreCase("MC_Ability_PassiveSkill")) {
                 if(args.length > 0) {
@@ -84,24 +86,7 @@ public class CommandClass implements CommandExecutor, TabCompleter {
                 }
                 player.openInventory(playerGUI.inv.get(player));
                 return true;
-            }else if(command.getName().equalsIgnoreCase("pv")) {
-                if(!(sender instanceof Player)) {
-                    sender.sendMessage("コンソールからは実行出来ません!!");
-                    return true;
-                }
-
-                Inventory inv = Bukkit.createInventory(player, 9, player.getName() + "'s Private GUI");
-
-                if(PlayerGUI.menus.containsKey(player.getUniqueId().toString())) {
-                    inv.setContents(PlayerGUI.menus.get(player.getUniqueId().toString()));
-                }
-
-                player.openInventory(inv);
-                return true;
             }
-        }else{
-            sender.sendMessage("コンソールからは実行できません!!!");
-            return true;
         }
         return false;
     }

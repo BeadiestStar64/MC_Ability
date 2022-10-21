@@ -5,6 +5,7 @@ import mc_ability.beadieststar64.mc_ability.GUI.PlayerGUI;
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
 import mc_ability.beadieststar64.mc_ability.Original_Item.OriginalItemClass;
 import mc_ability.beadieststar64.mc_ability.PassiveSkill.PassivePickaxeSkillClass;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -84,99 +85,11 @@ public class SQLite {
                         ", IS_PLAYER_LOG_OUT" + //マイナー発動中にログアウトしたか
                         ");");
 
-                stmt.executeUpdate("CREATE TABLE IF NOT EXISTS GUI(" +
+                stmt.executeUpdate("CREATE TABLE IF NOT EXISTS MAGIC_SKILL(" +
                         "MCID" +
                         ", UUID" +
-                        ", GUI_SIZE" +
-                        ", GUI_TITLE" +
-                        ", FIRST_INVENTORY_ITEM_MATERIAL" +
-                        ", FIRST_INVENTORY_ITEM_NAME" +
-                        ", FIRST_INVENTORY_ITEM_LORE1" +
-                        ", FIRST_INVENTORY_ITEM_LORE2" +
-                        ", FIRST_INVENTORY_ITEM_LORE3" +
-                        ", FIRST_INVENTORY_ITEM_LORE4" +
-                        ", FIRST_INVENTORY_ITEM_LORE5" +
-                        ", FIRST_INVENTORY_ITEM_LORE6" +
-                        ", FIRST_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME" +
-                        ", FIRST_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL" +
-                        ", FIRST_INVENTORY_ITEM_REGISTER_KEY" +
-                        ", SECOND_INVENTORY_ITEM_MATERIAL" +
-                        ", SECOND_INVENTORY_ITEM_NAME" +
-                        ", SECOND_INVENTORY_ITEM_LORE1" +
-                        ", SECOND_INVENTORY_ITEM_LORE2" +
-                        ", SECOND_INVENTORY_ITEM_LORE3" +
-                        ", SECOND_INVENTORY_ITEM_LORE4" +
-                        ", SECOND_INVENTORY_ITEM_LORE5" +
-                        ", SECOND_INVENTORY_ITEM_LORE6" +
-                        ", SECOND_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME" +
-                        ", SECOND_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL" +
-                        ", SECOND_INVENTORY_ITEM_REGISTER_KEY" +
-                        ", THIRD_INVENTORY_ITEM_MATERIAL" +
-                        ", THIRD_INVENTORY_ITEM_NAME" +
-                        ", THIRD_INVENTORY_ITEM_LORE1" +
-                        ", THIRD_INVENTORY_ITEM_LORE2" +
-                        ", THIRD_INVENTORY_ITEM_LORE3" +
-                        ", THIRD_INVENTORY_ITEM_LORE4" +
-                        ", THIRD_INVENTORY_ITEM_LORE5" +
-                        ", THIRD_INVENTORY_ITEM_LORE6" +
-                        ", THIRD_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME" +
-                        ", THIRD_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL" +
-                        ", THIRD_INVENTORY_ITEM_REGISTER_KEY" +
-                        ", FORTH_INVENTORY_ITEM_MATERIAL" +
-                        ", FORTH_INVENTORY_ITEM_NAME" +
-                        ", FORTH_INVENTORY_ITEM_LORE1" +
-                        ", FORTH_INVENTORY_ITEM_LORE2" +
-                        ", FORTH_INVENTORY_ITEM_LORE3" +
-                        ", FORTH_INVENTORY_ITEM_LORE4" +
-                        ", FORTH_INVENTORY_ITEM_LORE5" +
-                        ", FORTH_INVENTORY_ITEM_LORE6" +
-                        ", FORTH_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME" +
-                        ", FORTH_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL" +
-                        ", FORTH_INVENTORY_ITEM_REGISTER_KEY" +
-                        ", FIFTH_INVENTORY_ITEM_MATERIAL" +
-                        ", FIFTH_INVENTORY_ITEM_NAME" +
-                        ", FIFTH_INVENTORY_ITEM_LORE1" +
-                        ", FIFTH_INVENTORY_ITEM_LORE2" +
-                        ", FIFTH_INVENTORY_ITEM_LORE3" +
-                        ", FIFTH_INVENTORY_ITEM_LORE4" +
-                        ", FIFTH_INVENTORY_ITEM_LORE5" +
-                        ", FIFTH_INVENTORY_ITEM_LORE6" +
-                        ", FIFTH_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME" +
-                        ", FIFTH_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL" +
-                        ", FIFTH_INVENTORY_ITEM_REGISTER_KEY" +
-                        ", SIXTH_INVENTORY_ITEM_MATERIAL" +
-                        ", SIXTH_INVENTORY_ITEM_NAME" +
-                        ", SIXTH_INVENTORY_ITEM_LORE1" +
-                        ", SIXTH_INVENTORY_ITEM_LORE2" +
-                        ", SIXTH_INVENTORY_ITEM_LORE3" +
-                        ", SIXTH_INVENTORY_ITEM_LORE4" +
-                        ", SIXTH_INVENTORY_ITEM_LORE5" +
-                        ", SIXTH_INVENTORY_ITEM_LORE6" +
-                        ", SIXTH_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME" +
-                        ", SIXTH_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL" +
-                        ", SIXTH_INVENTORY_ITEM_REGISTER_KEY" +
-                        ", SEVENTH_INVENTORY_ITEM_MATERIAL" +
-                        ", SEVENTH_INVENTORY_ITEM_NAME" +
-                        ", SEVENTH_INVENTORY_ITEM_LORE1" +
-                        ", SEVENTH_INVENTORY_ITEM_LORE2" +
-                        ", SEVENTH_INVENTORY_ITEM_LORE3" +
-                        ", SEVENTH_INVENTORY_ITEM_LORE4" +
-                        ", SEVENTH_INVENTORY_ITEM_LORE5" +
-                        ", SEVENTH_INVENTORY_ITEM_LORE6" +
-                        ", SEVENTH_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME" +
-                        ", SEVENTH_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL" +
-                        ", SEVENTH_INVENTORY_ITEM_REGISTER_KEY" +
-                        ", EIGHTH_INVENTORY_ITEM_MATERIAL" +
-                        ", EIGHTH_INVENTORY_ITEM_NAME" +
-                        ", EIGHTH_INVENTORY_ITEM_LORE1" +
-                        ", EIGHTH_INVENTORY_ITEM_LORE2" +
-                        ", EIGHTH_INVENTORY_ITEM_LORE3" +
-                        ", EIGHTH_INVENTORY_ITEM_LORE4" +
-                        ", EIGHTH_INVENTORY_ITEM_LORE5" +
-                        ", EIGHTH_INVENTORY_ITEM_LORE6" +
-                        ", EIGHTH_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME" +
-                        ", EIGHTH_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL" +
-                        ", EIGHTH_INVENTORY_ITEM_REGISTER_KEY" +
+                        ", IS_STAMINA_CUT_LV_ONE" +
+                        ", IS_STAMINA_CUT_LV_TWO" +
                         ");");
                 con.commit();
                 stmt.close();
@@ -198,6 +111,8 @@ public class SQLite {
     }
 
     public void ConnectionDataBase(Player player) {
+
+        plugin.getLogger().info(player + "さんがログインしました。");
 
         Map<String, Boolean> IncludePlayer = new HashMap<String, Boolean>();
 
@@ -316,189 +231,13 @@ public class SQLite {
                 PreparedStatement prepStmt4 = con.prepareStatement("INSERT INTO GUI(" +
                         "MCID" +
                         ", UUID" +
-                        ", GUI_SIZE" +
-                        ", GUI_TITLE" +
-                        ", FIRST_INVENTORY_ITEM_MATERIAL" +
-                        ", FIRST_INVENTORY_ITEM_NAME" +
-                        ", FIRST_INVENTORY_ITEM_LORE1" +
-                        ", FIRST_INVENTORY_ITEM_LORE2" +
-                        ", FIRST_INVENTORY_ITEM_LORE3" +
-                        ", FIRST_INVENTORY_ITEM_LORE4" +
-                        ", FIRST_INVENTORY_ITEM_LORE5" +
-                        ", FIRST_INVENTORY_ITEM_LORE6" +
-                        ", FIRST_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME" +
-                        ", FIRST_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL" +
-                        ", FIRST_INVENTORY_ITEM_REGISTER_KEY" +
-                        ", SECOND_INVENTORY_ITEM_MATERIAL" +
-                        ", SECOND_INVENTORY_ITEM_NAME" +
-                        ", SECOND_INVENTORY_ITEM_LORE1" +
-                        ", SECOND_INVENTORY_ITEM_LORE2" +
-                        ", SECOND_INVENTORY_ITEM_LORE3" +
-                        ", SECOND_INVENTORY_ITEM_LORE4" +
-                        ", SECOND_INVENTORY_ITEM_LORE5" +
-                        ", SECOND_INVENTORY_ITEM_LORE6" +
-                        ", SECOND_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME" +
-                        ", SECOND_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL" +
-                        ", SECOND_INVENTORY_ITEM_REGISTER_KEY" +
-                        ", THIRD_INVENTORY_ITEM_MATERIAL" +
-                        ", THIRD_INVENTORY_ITEM_NAME" +
-                        ", THIRD_INVENTORY_ITEM_LORE1" +
-                        ", THIRD_INVENTORY_ITEM_LORE2" +
-                        ", THIRD_INVENTORY_ITEM_LORE3" +
-                        ", THIRD_INVENTORY_ITEM_LORE4" +
-                        ", THIRD_INVENTORY_ITEM_LORE5" +
-                        ", THIRD_INVENTORY_ITEM_LORE6" +
-                        ", THIRD_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME" +
-                        ", THIRD_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL" +
-                        ", THIRD_INVENTORY_ITEM_REGISTER_KEY" +
-                        ", FORTH_INVENTORY_ITEM_MATERIAL" +
-                        ", FORTH_INVENTORY_ITEM_NAME" +
-                        ", FORTH_INVENTORY_ITEM_LORE1" +
-                        ", FORTH_INVENTORY_ITEM_LORE2" +
-                        ", FORTH_INVENTORY_ITEM_LORE3" +
-                        ", FORTH_INVENTORY_ITEM_LORE4" +
-                        ", FORTH_INVENTORY_ITEM_LORE5" +
-                        ", FORTH_INVENTORY_ITEM_LORE6" +
-                        ", FORTH_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME" +
-                        ", FORTH_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL" +
-                        ", FORTH_INVENTORY_ITEM_REGISTER_KEY" +
-                        ", FIFTH_INVENTORY_ITEM_MATERIAL" +
-                        ", FIFTH_INVENTORY_ITEM_NAME" +
-                        ", FIFTH_INVENTORY_ITEM_LORE1" +
-                        ", FIFTH_INVENTORY_ITEM_LORE2" +
-                        ", FIFTH_INVENTORY_ITEM_LORE3" +
-                        ", FIFTH_INVENTORY_ITEM_LORE4" +
-                        ", FIFTH_INVENTORY_ITEM_LORE5" +
-                        ", FIFTH_INVENTORY_ITEM_LORE6" +
-                        ", FIFTH_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME" +
-                        ", FIFTH_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL" +
-                        ", FIFTH_INVENTORY_ITEM_REGISTER_KEY" +
-                        ", SIXTH_INVENTORY_ITEM_MATERIAL" +
-                        ", SIXTH_INVENTORY_ITEM_NAME" +
-                        ", SIXTH_INVENTORY_ITEM_LORE1" +
-                        ", SIXTH_INVENTORY_ITEM_LORE2" +
-                        ", SIXTH_INVENTORY_ITEM_LORE3" +
-                        ", SIXTH_INVENTORY_ITEM_LORE4" +
-                        ", SIXTH_INVENTORY_ITEM_LORE5" +
-                        ", SIXTH_INVENTORY_ITEM_LORE6" +
-                        ", SIXTH_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME" +
-                        ", SIXTH_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL" +
-                        ", SIXTH_INVENTORY_ITEM_REGISTER_KEY" +
-                        ", SEVENTH_INVENTORY_ITEM_MATERIAL" +
-                        ", SEVENTH_INVENTORY_ITEM_NAME" +
-                        ", SEVENTH_INVENTORY_ITEM_LORE1" +
-                        ", SEVENTH_INVENTORY_ITEM_LORE2" +
-                        ", SEVENTH_INVENTORY_ITEM_LORE3" +
-                        ", SEVENTH_INVENTORY_ITEM_LORE4" +
-                        ", SEVENTH_INVENTORY_ITEM_LORE5" +
-                        ", SEVENTH_INVENTORY_ITEM_LORE6" +
-                        ", SEVENTH_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME" +
-                        ", SEVENTH_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL" +
-                        ", SEVENTH_INVENTORY_ITEM_REGISTER_KEY" +
-                        ", EIGHTH_INVENTORY_ITEM_MATERIAL" +
-                        ", EIGHTH_INVENTORY_ITEM_NAME" +
-                        ", EIGHTH_INVENTORY_ITEM_LORE1" +
-                        ", EIGHTH_INVENTORY_ITEM_LORE2" +
-                        ", EIGHTH_INVENTORY_ITEM_LORE3" +
-                        ", EIGHTH_INVENTORY_ITEM_LORE4" +
-                        ", EIGHTH_INVENTORY_ITEM_LORE5" +
-                        ", EIGHTH_INVENTORY_ITEM_LORE6" +
-                        ", EIGHTH_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME" +
-                        ", EIGHTH_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL" +
-                        ", EIGHTH_INVENTORY_ITEM_REGISTER_KEY" +
+                        ", IS_STAMINA_CUT_LV_ONE" +
+                        ", IS_STAMINA_CUT_LV_TWO" +
                         ") VALUES (" +
                         "?" +
                         ", ?" +
-                        ", 9" +
-                        ", '\"ChatColor.AQUA+\\\"\\\"+ChatColor.BOLD\"+\\\"MC_Ability 魔法スキル\\\"\"'" +
-                        ", 'AIR'" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
                         ", 0" +
-                        ", NULL" +
-                        ", 'AIR'" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
                         ", 0" +
-                        ", NULL" +
-                        ", 'AIR'" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", 0" +
-                        ", NULL" +
-                        ", 'AIR'" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", 0" +
-                        ", NULL" +
-                        ", 'AIR'" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", 0" +
-                        ", NULL" +
-                        ", 'AIR'" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", 0" +
-                        ", NULL" +
-                        ", 'AIR'" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", 0" +
-                        ", NULL" +
-                        ", 'BARRIER'" +
-                        ", '\"ChatColor.RED+\\\"\\\"+ChatColor.BOLD\"+\\\"GUIを閉じる\\\"\"'" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", NULL" +
-                        ", 0" +
-                        ", '\"close_gui\"'" +
                         ");");
                 prepStmt4.setString(1, player.getName());
                 prepStmt4.setString(2, player.getUniqueId().toString());
@@ -745,6 +484,8 @@ public class SQLite {
     public void onDisable() {
         try {
             con.close();
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "[MC_Ability]" +
+                    ChatColor.GOLD + "SQLiteから切断しました。");
         }catch (Exception e) {
             MC_Ability.ErrorLog(e);
         }

@@ -62,7 +62,7 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
     public ArrayList<Material> TerracottaList = new ArrayList<>(Arrays.asList(Terracotta));
 
     public static Map<Player, BossBar> MinerLevelBossBar = new HashMap<>();
-    BossBar MinerKevel = Bukkit.createBossBar(ChatColor.GREEN+""+ChatColor.BOLD+"採掘", BarColor.GREEN, BarStyle.SOLID);
+    BossBar MinerLevel = Bukkit.createBossBar(ChatColor.GREEN+""+ChatColor.BOLD+"採掘", BarColor.GREEN, BarStyle.SOLID);
 
     public void SetMethod(Player player) {
         DisplayMinerBossBarTime.put(player, 5.0);
@@ -113,15 +113,15 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
 
     public void LevelBarShow (Player player) {
         if(MinerLevelBossBar.containsKey(player)) {
-            MinerKevel.setProgress(GetPlayerMinerEXP.get(player)/NextPlayerMinerEXP.get(player));
-            MinerKevel.setTitle(ChatColor.GREEN+""+ChatColor.BOLD+"採掘 Lv."+ChatColor.GOLD+GetPlayerMinerLevel.get(player));
-            MinerLevelBossBar.put(player, MinerKevel);
-            MinerKevel.addPlayer(player);
+            MinerLevel.setProgress(GetPlayerMinerEXP.get(player)/NextPlayerMinerEXP.get(player));
+            MinerLevel.setTitle(ChatColor.GREEN+""+ChatColor.BOLD+"採掘 Lv."+ChatColor.GOLD+GetPlayerMinerLevel.get(player));
+            MinerLevelBossBar.put(player, MinerLevel);
+            MinerLevel.addPlayer(player);
         }else{
-            MinerKevel.setProgress(GetPlayerMinerEXP.get(player)/NextPlayerMinerEXP.get(player));
-            MinerKevel.setTitle(ChatColor.GREEN+""+ChatColor.BOLD+"採掘 Lv."+ChatColor.GOLD+GetPlayerMinerLevel.get(player));
-            MinerLevelBossBar.put(player, MinerKevel);
-            MinerKevel.addPlayer(player);
+            MinerLevel.setProgress(GetPlayerMinerEXP.get(player)/NextPlayerMinerEXP.get(player));
+            MinerLevel.setTitle(ChatColor.GREEN+""+ChatColor.BOLD+"採掘 Lv."+ChatColor.GOLD+GetPlayerMinerLevel.get(player));
+            MinerLevelBossBar.put(player, MinerLevel);
+            MinerLevel.addPlayer(player);
         }
 
         getLogger().info("OverRideMinerLevelは"+OverRideMinerLevel.get(player).toString());
@@ -152,8 +152,8 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
                 if(DisplayMinerBossBarTime.get(player) <= 0.0) {
                     cancel();
                     DisplayMinerBossBarTime.put(player, 5.0);
-                    MinerKevel.removePlayer(player);
-                    MinerLevelBossBar.put(player, MinerKevel);
+                    MinerLevel.removePlayer(player);
+                    MinerLevelBossBar.put(player, MinerLevel);
                     OverRideMinerLevel.put(player, false);
                     return;
                 }
