@@ -3,6 +3,7 @@ import com.sun.org.apache.xpath.internal.operations.Bool;
 import jdk.jfr.Enabled;
 import mc_ability.beadieststar64.mc_ability.DataBase.SQLite;
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
+import mc_ability.beadieststar64.mc_ability.MagicSkill.StaminaCutter.BlockBreakClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -79,6 +80,9 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
         Player player = event.getPlayer();
         Block block = event.getBlock();
         SetPlayerMinerEXP.put(player, 0.0);
+
+        BlockBreakClass breakclass = new BlockBreakClass();
+        breakclass.BlockBreak(player);
 
         if(!NextPlayerMinerLevel.containsKey(player) || !OverRideMinerLevel.containsKey(player) || !bool.containsKey(player)) {
             SetMethod(player);

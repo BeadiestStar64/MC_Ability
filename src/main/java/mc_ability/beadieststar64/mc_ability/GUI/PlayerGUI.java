@@ -1,19 +1,17 @@
 package mc_ability.beadieststar64.mc_ability.GUI;
 
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
-import mc_ability.beadieststar64.mc_ability.MagicSkill.StaminaCutterClass;
-import mc_ability.beadieststar64.mc_ability.Original_Item.OriginalItemClass;
+import mc_ability.beadieststar64.mc_ability.MagicSkill.StaminaCutter.StaminaCutterClass;
+import mc_ability.beadieststar64.mc_ability.Original_Item.original_item.Stamina_Cutter.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -121,101 +119,11 @@ public class PlayerGUI extends ExtenderForGUI implements Listener {
                 player.closeInventory();
             }
         } else if (event.getClickedInventory() == inv2.get(player)) {
-            if (event.getSlot() == 0) {
-                for (int i = 0; i < 36; i++) {
-                    if(player.getInventory().getItem(i) == null) {
-                        continue;
-                    }
-                    if (player.getInventory().getItem(i).getI18NDisplayName().equals(StaminaCutterLv1.getI18NDisplayName())) {
-                        inv2.get(player).close();
-                        player.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "スタミナカッター Lv.1" +
-                                ChatColor.WHITE + "発動!!");
 
-                        StaminaCutterLv1.setAmount(1);
-                        player.getInventory().removeItem(StaminaCutterLv1);
-
-                        cutterClass.StaminaCutterLv2_Activate.put(player, true);
-                        break;
-                    }else{
-                        player.sendMessage(ChatColor.RED + "インベントリに「スタミナカッター Lv.1」を持つ必要があります!!");
-                    }
-                }
-            }else if(event.getSlot() == 2) {
-                for (int i = 0; i < 36; i++) {
-                    if(player.getInventory().getItem(i) == null) {
-                        continue;
-                    }
-                    if (player.getInventory().getItem(i).getI18NDisplayName().equals(StaminaCutterLv2.getI18NDisplayName())) {
-                        inv2.get(player).close();
-                        player.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "スタミナカッター Lv.2" +
-                                ChatColor.WHITE + "発動!!");
-
-                        StaminaCutterLv2.setAmount(1);
-                        player.getInventory().removeItem(StaminaCutterLv2);
-
-                        cutterClass.StaminaCutterLv2_Activate.put(player, true);
-                        break;
-                    }else{
-                        player.sendMessage(ChatColor.RED + "インベントリに「スタミナカッター Lv.2」を持つ必要があります!!");
-                    }
-                }
-            }else if(event.getSlot() == 4) {
-                for (int i = 0; i < 36; i++) {
-                    if(player.getInventory().getItem(i) == null) {
-                        continue;
-                    }
-                    if (player.getInventory().getItem(i).getI18NDisplayName().equals(StaminaCutterLv3.getI18NDisplayName())) {
-                        inv2.get(player).close();
-                        player.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "スタミナカッター Lv.3" +
-                                ChatColor.WHITE + "発動!!");
-
-                        StaminaCutterLv3.setAmount(1);
-                        player.getInventory().removeItem(StaminaCutterLv3);
-
-                        cutterClass.StaminaCutterLv3_Activate.put(player, true);
-                        break;
-                    }else{
-                        player.sendMessage(ChatColor.RED + "インベントリに「スタミナカッター Lv.3」を持つ必要があります!!");
-                    }
-                }
-            }else if(event.getSlot() == 6) {
-                for (int i = 0; i < 36; i++) {
-                    if(player.getInventory().getItem(i) == null) {
-                        continue;
-                    }
-                    if (player.getInventory().getItem(i).getI18NDisplayName().equals(StaminaCutterLv4.getI18NDisplayName())) {
-                        inv2.get(player).close();
-                        player.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "スタミナカッター Lv.4" +
-                                ChatColor.WHITE + "発動!!");
-
-                        StaminaCutterLv4.setAmount(1);
-                        player.getInventory().removeItem(StaminaCutterLv4);
-
-                        cutterClass.StaminaCutterLv4_Activate.put(player, true);
-                        break;
-                    }else{
-                        player.sendMessage(ChatColor.RED + "インベントリに「スタミナカッター Lv.4」を持つ必要があります!!");
-                    }
-                }
-            }else if(event.getSlot() == 8) {
-                for (int i = 0; i < 36; i++) {
-                    if(player.getInventory().getItem(i) == null) {
-                        continue;
-                    }
-                    if (player.getInventory().getItem(i).getI18NDisplayName().equals(StaminaCutterLv5.getI18NDisplayName())) {
-                        inv2.get(player).close();
-                        player.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "スタミナカッター Lv.5" +
-                                ChatColor.WHITE + "発動!!");
-
-                        StaminaCutterLv5.setAmount(1);
-                        player.getInventory().removeItem(StaminaCutterLv5);
-
-                        cutterClass.StaminaCutterLv5_Activate.put(player, true);
-                        break;
-                    }else{
-                        player.sendMessage(ChatColor.RED + "インベントリに「スタミナカッター Lv.5」を持つ必要があります!!");
-                    }
-                }
+            switch (menus.get(player)) {
+                case 1:
+                    SutaminaCutter(event,player);
+                    break;
             }
         }
     }
@@ -233,11 +141,13 @@ public class PlayerGUI extends ExtenderForGUI implements Listener {
                 //スタミナカッター
                 inv2.put(player, Bukkit.createInventory(player, 18, ChatColor.DARK_GREEN + "" +ChatColor.BOLD + "スタミナカッター"));
 
-                StaminaCutterLv1(player);
-                StaminaCutterLv2(player);
-                StaminaCutterLv3(player);
-                StaminaCutterLv4(player);
-                StaminaCutterLv5(player);
+                inv2.get(player).setItem(0, Stamina_Cutter_Lv1.StaminaAnvilSkillLv1);
+                inv2.get(player).setItem(2, Stamina_Cutter_Lv2.StaminaAnvilSkillLv2);
+                inv2.get(player).setItem(4, Stamina_Cutter_Lv3.StaminaAnvilSkillLv3);
+                inv2.get(player).setItem(6, Stamina_Cutter_Lv4.StaminaAnvilSkillLv4);
+                inv2.get(player).setItem(8, Stamina_Cutter_Lv5.StaminaAnvilSkillLv5);
+                ShowDurability(player);
+
                 for(int i = 0; i < inv2.get(player).getSize(); i++) {
                     if(inv2.get(player).getItem(i) == null) {
                         ItemStack item = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
@@ -250,129 +160,166 @@ public class PlayerGUI extends ExtenderForGUI implements Listener {
         }
     }
 
-    public void StaminaCutterLv1(Player player) {
-        StaminaCutterLv1 = new ItemStack(Material.ANVIL);
-        ItemMeta meta = StaminaCutterLv1.getItemMeta();
+    public void SutaminaCutter(InventoryClickEvent event,Player player) {
+        if (event.getSlot() == 0) {
 
-        meta.setDisplayName(ChatColor.GRAY+"スタミナカッター" +
-                ChatColor.WHITE+""+ChatColor.BOLD+" Lv.1");
+            Map<Player, Boolean> IncludeInventory = new HashMap<Player, Boolean>();
 
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.WHITE+"レア度:" +
-                ChatColor.GRAY+"" + ChatColor.BOLD+"ノーマル");
-        lore.add("");
-        lore.add(ChatColor.WHITE+"魔法スキルの一つ");
-        lore.add(ChatColor.WHITE+"アクティベートされると");
-        lore.add(ChatColor.GOLD+""+ChatColor.BOLD+"全ての道具の耐久値減少が10%低下" + ChatColor.WHITE+"する");
-        lore.add(ChatColor.AQUA+"Create by " + ChatColor.GOLD+""+ChatColor.BOLD+"MC_Ability");
-        meta.setLore(lore);
+            IncludeInventory.put(player, false);
 
-        StaminaCutterLv1.setItemMeta(meta);
+            for (int i = 0; i < 36; i++) {
+                if (player.getInventory().getItem(i) == null) {
+                    continue;
+                }
 
-        StaminaCutterLv1.addUnsafeEnchantment(Enchantment.DURABILITY,10);
-        StaminaCutterLv1.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                ItemStack item = Stamina_Cutter_Lv1.StaminaAnvilSkillLv1;
 
-        inv2.get(player).setItem(0, StaminaCutterLv1);
-    }
+                if (player.getInventory().getItem(i).getI18NDisplayName().equals(item.getI18NDisplayName())) {
+                    player.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "スタミナカッター Lv.1" +
+                            ChatColor.WHITE + "発動!!");
 
-    public void StaminaCutterLv2(Player player) {
-        StaminaCutterLv2 = new ItemStack(Material.ANVIL);
-        ItemMeta meta = StaminaCutterLv2.getItemMeta();
+                    item.setAmount(1);
+                    player.getInventory().removeItem(item);
+                    cutterClass.StaminaCutterLv1_Activate.put(player, true);
 
-        meta.setDisplayName(ChatColor.AQUA+"スタミナカッター" +
-                ChatColor.WHITE+""+ChatColor.BOLD+" Lv.2");
+                    IncludeInventory.put(player, true);
+                    break;
+                }
+            }
+            if (!IncludeInventory.get(player)) {
+                player.sendMessage(ChatColor.RED + "インベントリに「スタミナカッター Lv.1」を持つ必要があります!!");
+            }
 
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.WHITE+"レア度:" +
-                ChatColor.AQUA+"" + ChatColor.BOLD+"レア");
-        lore.add("");
-        lore.add(ChatColor.WHITE+"魔法スキルの一つ");
-        lore.add(ChatColor.WHITE+"アクティベートされると");
-        lore.add(ChatColor.GOLD+""+ChatColor.BOLD+"全ての道具の耐久値減少が20%低下" + ChatColor.WHITE+"する");
-        lore.add(ChatColor.AQUA+"Create by " + ChatColor.GOLD+""+ChatColor.BOLD+"MC_Ability");
-        meta.setLore(lore);
+            inv2.get(player).close();
 
-        StaminaCutterLv2.setItemMeta(meta);
+        } else if (event.getSlot() == 2) {
 
-        StaminaCutterLv2.addUnsafeEnchantment(Enchantment.DURABILITY,10);
-        StaminaCutterLv2.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            Map<Player, Boolean> IncludeInventory = new HashMap<Player, Boolean>();
 
-        inv2.get(player).setItem(2, StaminaCutterLv2);
-    }
+            IncludeInventory.put(player, false);
 
-    public void StaminaCutterLv3(Player player) {
-        StaminaCutterLv3 = new ItemStack(Material.ANVIL);
-        ItemMeta meta = StaminaCutterLv3.getItemMeta();
+            for (int i = 0; i < 36; i++) {
+                if (player.getInventory().getItem(i) == null) {
+                    continue;
+                }
 
-        meta.setDisplayName(ChatColor.GOLD+"スタミナカッター" +
-                ChatColor.WHITE+""+ChatColor.BOLD+" Lv.3");
+                ItemStack item = Stamina_Cutter_Lv2.StaminaAnvilSkillLv2;
 
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.WHITE+"レア度:" +
-                ChatColor.GOLD+"" + ChatColor.BOLD+"スーパーレア");
-        lore.add("");
-        lore.add(ChatColor.WHITE+"魔法スキルの一つ");
-        lore.add(ChatColor.WHITE+"アクティベートされると");
-        lore.add(ChatColor.GOLD+""+ChatColor.BOLD+"全ての道具の耐久値減少が30%低下" + ChatColor.WHITE+"する");
-        lore.add(ChatColor.AQUA+"Create by " + ChatColor.GOLD+""+ChatColor.BOLD+"MC_Ability");
-        meta.setLore(lore);
+                if (player.getInventory().getItem(i).getI18NDisplayName().equals(item.getI18NDisplayName())) {
 
-        StaminaCutterLv3.setItemMeta(meta);
+                    player.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "スタミナカッター Lv.2" +
+                            ChatColor.WHITE + "発動!!");
 
-        StaminaCutterLv3.addUnsafeEnchantment(Enchantment.DURABILITY,10);
-        StaminaCutterLv3.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    item.setAmount(1);
+                    player.getInventory().removeItem(item);
 
-        inv2.get(player).setItem(4, StaminaCutterLv3);
-    }
+                    cutterClass.StaminaCutterLv2_Activate.put(player, true);
+                    IncludeInventory.put(player, true);
+                    break;
+                }
+            }
+            if (!IncludeInventory.get(player)) {
+                player.sendMessage(ChatColor.RED + "インベントリに「スタミナカッター Lv.2」を持つ必要があります!!");
+            }
 
-    public void StaminaCutterLv4(Player player) {
-        StaminaCutterLv4 = new ItemStack(Material.ANVIL);
-        ItemMeta meta = StaminaCutterLv4.getItemMeta();
+            inv2.get(player).close();
 
-        meta.setDisplayName(ChatColor.RED+"スタミナカッター" +
-                ChatColor.WHITE+""+ChatColor.BOLD+" Lv.4");
+        } else if (event.getSlot() == 4) {
 
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.WHITE+"レア度:" +
-                ChatColor.RED+"" + ChatColor.BOLD+"ハイパーレア");
-        lore.add("");
-        lore.add(ChatColor.WHITE+"魔法スキルの一つ");
-        lore.add(ChatColor.WHITE+"アクティベートされると");
-        lore.add(ChatColor.GOLD+""+ChatColor.BOLD+"全ての道具の耐久値減少が40%低下" + ChatColor.WHITE+"する");
-        lore.add(ChatColor.AQUA+"Create by " + ChatColor.GOLD+""+ChatColor.BOLD+"MC_Ability");
-        meta.setLore(lore);
+            Map<Player, Boolean> IncludeInventory = new HashMap<Player, Boolean>();
 
-        StaminaCutterLv4.setItemMeta(meta);
+            IncludeInventory.put(player, false);
 
-        StaminaCutterLv4.addUnsafeEnchantment(Enchantment.DURABILITY,10);
-        StaminaCutterLv4.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            for (int i = 0; i < 36; i++) {
+                if (player.getInventory().getItem(i) == null) {
+                    continue;
+                }
 
-        inv2.get(player).setItem(6, StaminaCutterLv4);
-    }
+                ItemStack item = Stamina_Cutter_Lv3.StaminaAnvilSkillLv3;
 
-    public void StaminaCutterLv5(Player player) {
-        StaminaCutterLv5 = new ItemStack(Material.ANVIL);
-        ItemMeta meta = StaminaCutterLv5.getItemMeta();
+                if (player.getInventory().getItem(i).getI18NDisplayName().equals(item.getI18NDisplayName())) {
 
-        meta.setDisplayName(ChatColor.LIGHT_PURPLE+"スタミナカッター" +
-                ChatColor.WHITE+""+ChatColor.BOLD+" Lv.5");
+                    player.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "スタミナカッター Lv.3" +
+                            ChatColor.WHITE + "発動!!");
 
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.WHITE+"レア度:" +
-                ChatColor.LIGHT_PURPLE+"" + ChatColor.BOLD+"極！レア");
-        lore.add("");
-        lore.add(ChatColor.WHITE+"魔法スキルの一つ");
-        lore.add(ChatColor.WHITE+"アクティベートされると");
-        lore.add(ChatColor.GOLD+""+ChatColor.BOLD+"全ての道具の耐久値減少が50%低下" + ChatColor.WHITE+"する");
-        lore.add(ChatColor.AQUA+"Create by " + ChatColor.GOLD+""+ChatColor.BOLD+"MC_Ability");
-        meta.setLore(lore);
+                    item.setAmount(1);
+                    player.getInventory().removeItem(item);
 
-        StaminaCutterLv5.setItemMeta(meta);
+                    cutterClass.StaminaCutterLv3_Activate.put(player, true);
+                    IncludeInventory.put(player, true);
+                    break;
+                }
+            }
+            if (!IncludeInventory.get(player)) {
+                player.sendMessage(ChatColor.RED + "インベントリに「スタミナカッター Lv.3」を持つ必要があります!!");
+            }
 
-        StaminaCutterLv5.addUnsafeEnchantment(Enchantment.DURABILITY,10);
-        StaminaCutterLv5.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            inv2.get(player).close();
 
-        inv2.get(player).setItem(8, StaminaCutterLv5);
+        } else if (event.getSlot() == 6) {
+
+            Map<Player, Boolean> IncludeInventory = new HashMap<Player, Boolean>();
+
+            IncludeInventory.put(player, false);
+
+            for (int i = 0; i < 36; i++) {
+                if (player.getInventory().getItem(i) == null) {
+                    continue;
+                }
+
+                ItemStack item = Stamina_Cutter_Lv4.StaminaAnvilSkillLv4;
+
+                if (player.getInventory().getItem(i).getI18NDisplayName().equals(item.getI18NDisplayName())) {
+
+                    player.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "スタミナカッター Lv.4" +
+                            ChatColor.WHITE + "発動!!");
+
+                    item.setAmount(1);
+                    player.getInventory().removeItem(item);
+
+                    cutterClass.StaminaCutterLv4_Activate.put(player, true);
+                    IncludeInventory.put(player, true);
+                    break;
+                }
+            }
+            if (!IncludeInventory.get(player)) {
+                player.sendMessage(ChatColor.RED + "インベントリに「スタミナカッター Lv.4」を持つ必要があります!!");
+            }
+
+            inv2.get(player).close();
+
+        } else if (event.getSlot() == 8) {
+
+            Map<Player, Boolean> IncludeInventory = new HashMap<Player, Boolean>();
+
+            IncludeInventory.put(player, false);
+
+            for (int i = 0; i < 36; i++) {
+                if (player.getInventory().getItem(i) == null) {
+                    continue;
+                }
+
+                ItemStack item = Stamina_Cutter_Lv5.StaminaAnvilSkillLv5;
+
+                if (player.getInventory().getItem(i).getI18NDisplayName().equals(item.getI18NDisplayName())) {
+                    player.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "スタミナカッター Lv.5" +
+                            ChatColor.WHITE + "発動!!");
+
+                    item.setAmount(1);
+                    player.getInventory().removeItem(item);
+
+                    cutterClass.StaminaCutterLv5_Activate.put(player, true);
+                    IncludeInventory.put(player, true);
+                    break;
+                }
+            }
+            if (!IncludeInventory.get(player)) {
+                player.sendMessage(ChatColor.RED + "インベントリに「スタミナカッター Lv.5」を持つ必要があります!!");
+            }
+
+            inv2.get(player).close();
+
+        }
     }
 
     public void StaminaCut(Player player) {
@@ -414,5 +361,163 @@ public class PlayerGUI extends ExtenderForGUI implements Listener {
         item.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
         inv.get(player).setItem(1, item);
+    }
+
+    public void ShowDurability(Player player) {
+
+        StaminaCutterClass cutterClass = new StaminaCutterClass();
+        cutterClass.SetValues(player);
+
+        ItemStack item1 = new ItemStack(Material.EMERALD_BLOCK);
+        ItemStack item2 = new ItemStack(Material.EMERALD_BLOCK);
+        ItemStack item3 = new ItemStack(Material.EMERALD_BLOCK);
+        ItemStack item4 = new ItemStack(Material.EMERALD_BLOCK);
+        ItemStack item5 = new ItemStack(Material.EMERALD_BLOCK);
+
+        ItemMeta meta1 = item1.getItemMeta();
+        ItemMeta meta2 = item2.getItemMeta();
+        ItemMeta meta3 = item3.getItemMeta();
+        ItemMeta meta4 = item4.getItemMeta();
+        ItemMeta meta5 = item5.getItemMeta();
+
+        String Display = "";
+        Map<Player, Integer> NowDurability = new HashMap<>();
+        Map<Player, Integer> MaxDurability = new HashMap<>();
+
+        int x = 0;
+
+        for(int i = 0; i <=5; i++) {
+            switch (i) {
+                case 1:
+
+                    x = ((StaminaCutterClass.StaminaCutterLv1_NowStamina.get(player))/(StaminaCutterClass.StaminaCutterLv1_MaxStamina.get(player)));
+                    NowDurability.put(player, StaminaCutterClass.StaminaCutterLv1_NowStamina.get(player));
+                    MaxDurability.put(player, StaminaCutterClass.StaminaCutterLv1_MaxStamina.get(player));
+                    break;
+
+                case 2:
+
+                    x = ((StaminaCutterClass.StaminaCutterLv2_NowStamina.get(player))/(StaminaCutterClass.StaminaCutterLv2_MaxStamina.get(player)));
+                    NowDurability.put(player, StaminaCutterClass.StaminaCutterLv2_NowStamina.get(player));
+                    MaxDurability.put(player, StaminaCutterClass.StaminaCutterLv2_MaxStamina.get(player));
+                    break;
+
+                case 3:
+
+                    x = ((StaminaCutterClass.StaminaCutterLv3_NowStamina.get(player))/(StaminaCutterClass.StaminaCutterLv3_MaxStamina.get(player)));
+                    NowDurability.put(player, StaminaCutterClass.StaminaCutterLv3_NowStamina.get(player));
+                    MaxDurability.put(player, StaminaCutterClass.StaminaCutterLv3_MaxStamina.get(player));
+                    break;
+
+                case 4:
+
+                    x = ((StaminaCutterClass.StaminaCutterLv4_NowStamina.get(player))/(StaminaCutterClass.StaminaCutterLv4_MaxStamina.get(player)));
+                    NowDurability.put(player, StaminaCutterClass.StaminaCutterLv4_NowStamina.get(player));
+                    MaxDurability.put(player, StaminaCutterClass.StaminaCutterLv4_MaxStamina.get(player));
+                    break;
+
+                case 5:
+
+                    x = ((StaminaCutterClass.StaminaCutterLv5_NowStamina.get(player))/(StaminaCutterClass.StaminaCutterLv5_MaxStamina.get(player)));
+                    NowDurability.put(player, StaminaCutterClass.StaminaCutterLv5_NowStamina.get(player));
+                    MaxDurability.put(player, StaminaCutterClass.StaminaCutterLv5_MaxStamina.get(player));
+                    break;
+            }
+
+            if(x >= 0.8) {
+                Display = ChatColor.WHITE + "現在の耐久値: " + ChatColor.AQUA + NowDurability.get(player) +
+                        ChatColor.WHITE + "" + ChatColor.BOLD + " / " +
+                        ChatColor.WHITE + "最大耐久値: " + ChatColor.WHITE + "" + ChatColor.BOLD + MaxDurability.get(player);
+            }else if(x < 0.8 && x >= 0.6) {
+                Display = ChatColor.WHITE + "現在の耐久値: " + ChatColor.GREEN + NowDurability.get(player) +
+                        ChatColor.WHITE + "" + ChatColor.BOLD + " / " +
+                        ChatColor.WHITE + "最大耐久値: " + ChatColor.WHITE + "" + ChatColor.BOLD + MaxDurability.get(player);
+            }else if(x < 0.6 && x >= 0.2) {
+                Display = ChatColor.WHITE + "現在の耐久値: " + ChatColor.YELLOW + NowDurability.get(player) +
+                        ChatColor.WHITE + "" + ChatColor.BOLD + " / " +
+                        ChatColor.WHITE + "最大耐久値: " + ChatColor.WHITE + "" + ChatColor.BOLD + MaxDurability.get(player);
+            }else{
+                Display = ChatColor.WHITE + "現在の耐久値: " + ChatColor.RED + NowDurability.get(player) +
+                        ChatColor.WHITE + "" + ChatColor.BOLD + " / " +
+                        ChatColor.WHITE + "最大耐久値: " + ChatColor.WHITE + "" + ChatColor.BOLD + MaxDurability.get(player);
+            }
+
+            switch (i) {
+                case 1:
+                    meta1.setDisplayName(Display);
+                    item1.setItemMeta(meta1);
+                    if(StaminaCutterClass.StaminaCutterLv1_Activate.get(player)) {
+                        List<String> lore = new ArrayList<>();
+                        lore.add(ChatColor.GOLD + "" + ChatColor.BOLD + "ただいま発動中です!");
+                        meta1.setLore(lore);
+                        item1.setItemMeta(meta1);
+
+                        item1.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+                        item1.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    }
+                    inv2.get(player).setItem(9, item1);
+                    break;
+
+                case 2:
+                    meta2.setDisplayName(Display);
+                    item2.setItemMeta(meta2);
+                    if(StaminaCutterClass.StaminaCutterLv2_Activate.get(player)) {
+                        List<String> lore = new ArrayList<>();
+                        lore.add(ChatColor.GOLD + "" + ChatColor.BOLD + "ただいま発動中です!");
+                        meta2.setLore(lore);
+                        item2.setItemMeta(meta2);
+
+                        item2.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+                        item2.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    }
+                    inv2.get(player).setItem(11, item2);
+                    break;
+
+                case 3:
+                    meta3.setDisplayName(Display);
+                    item3.setItemMeta(meta3);
+                    if(StaminaCutterClass.StaminaCutterLv3_Activate.get(player)) {
+                        List<String> lore = new ArrayList<>();
+                        lore.add(ChatColor.GOLD + "" + ChatColor.BOLD + "ただいま発動中です!");
+                        meta3.setLore(lore);
+                        item3.setItemMeta(meta3);
+
+                        item3.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+                        item3.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    }
+                    inv2.get(player).setItem(13, item3);
+                    break;
+
+                case 4:
+                    meta4.setDisplayName(Display);
+                    item4.setItemMeta(meta4);
+                    if(StaminaCutterClass.StaminaCutterLv4_Activate.get(player)) {
+                        List<String> lore = new ArrayList<>();
+                        lore.add(ChatColor.GOLD + "" + ChatColor.BOLD + "ただいま発動中です!");
+                        meta4.setLore(lore);
+                        item4.setItemMeta(meta4);
+
+                        item4.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+                        item4.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    }
+                    inv2.get(player).setItem(15, item4);
+                    break;
+
+                case 5:
+                    meta5.setDisplayName(Display);
+                    item5.setItemMeta(meta5);
+                    if(StaminaCutterClass.StaminaCutterLv5_Activate.get(player)) {
+                        List<String> lore = new ArrayList<>();
+                        lore.add(ChatColor.GOLD + "" + ChatColor.BOLD + "ただいま発動中です!");
+                        meta5.setLore(lore);
+                        item5.setItemMeta(meta5);
+
+                        item5.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+                        item5.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    }
+                    inv2.get(player).setItem(17, item5);
+                    break;
+            }
+        }
     }
 }

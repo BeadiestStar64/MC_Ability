@@ -3,6 +3,7 @@ package mc_ability.beadieststar64.mc_ability.DataBase;
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -48,6 +49,10 @@ public class MySQL {
         }catch (Exception e) {
             MC_Ability.ErrorLog(e);
         }
+    }
+
+    public void ConnectionDataBase(Player player) {
+
     }
 
     public void onDisable() {

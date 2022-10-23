@@ -1,5 +1,6 @@
-package mc_ability.beadieststar64.mc_ability.MagicSkill;
+package mc_ability.beadieststar64.mc_ability.MagicSkill.StaminaCutter;
 
+import mc_ability.beadieststar64.mc_ability.DataBase.SQLite;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -26,5 +27,12 @@ public class StaminaCutterClass {
     public static Map<Player, Integer> StaminaCutterLv5_MaxStamina = new HashMap<>();
     public static Map<Player, Integer> StaminaCutterLv5_NowStamina = new HashMap<>();
     public static Map<Player, Boolean> StaminaCutterLv5_Activate = new HashMap<>();
+
+    public void SetValues(Player player) {
+        if(!StaminaCutterLv1_Activate.containsKey(player)) {
+            SQLite sqlite = new SQLite();
+            sqlite.GetPlayersMagicSkillData(player);
+        }
+    }
 
 }

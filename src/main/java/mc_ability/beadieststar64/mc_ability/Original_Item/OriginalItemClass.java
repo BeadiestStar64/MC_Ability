@@ -1,154 +1,116 @@
 package mc_ability.beadieststar64.mc_ability.Original_Item;
 
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
+import mc_ability.beadieststar64.mc_ability.Original_Item.original_item.*;
+import mc_ability.beadieststar64.mc_ability.Original_Item.original_item.Stamina_Cutter.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class OriginalItemClass extends ExtenderOriginalItemClass implements Listener {
 
-    public static ItemMeta meta;
+    public Magic_Ability_Show abilitybookClass = new Magic_Ability_Show(plugin);
 
-    public NamespacedKey Ability_Book = new NamespacedKey(plugin, "setting_book");
-    public NamespacedKey stamina_Lv1 = new NamespacedKey(plugin, "stamina_lv1");
-    public NamespacedKey stamina_Lv2 = new NamespacedKey(plugin, "stamina_lv2");
+    public Stamina_Cutter_Base_Class CutterBaseClass = new Stamina_Cutter_Base_Class(plugin);
+    public Stamina_Cutter_Lv1 cutterLv1Class = new Stamina_Cutter_Lv1(plugin);
+    public Stamina_Cutter_Lv2 cutterLv2Class = new Stamina_Cutter_Lv2(plugin);
+    public Stamina_Cutter_Lv3 cutterLv3Class = new Stamina_Cutter_Lv3(plugin);
+    public Stamina_Cutter_Lv4 cutterLv4Class = new Stamina_Cutter_Lv4(plugin);
+    public Stamina_Cutter_Lv5 cutterLv5Class = new Stamina_Cutter_Lv5(plugin);
 
     public OriginalItemClass(MC_Ability plugin) {
         super(plugin);
     }
 
     public void OriginalItmCreate() {
-        Ability_Book = new NamespacedKey(plugin, "setting_book");
-        stamina_Lv1 = new NamespacedKey(plugin, "stamina_lv1");
-        stamina_Lv2 = new NamespacedKey(plugin, "stamina_lv2");
 
-        AbilityBook();
-        StaminaAnvilSkillLv1();
-        StaminaAnvilLv2();
-        
+        abilitybookClass.AbilityBook();
+
+        CutterBaseClass.BaseItem();
+        cutterLv1Class.StaminaCutterLv1();
+        cutterLv2Class.StaminaCutterLv2();
+        cutterLv3Class.StaminaCutterLv3();
+        cutterLv4Class.StaminaCutterLv4();
+        cutterLv5Class.StaminaCutterLv5();
+
+        ShiningDiamond();
+
         Bukkit.getLogger().info("アイテム登録が完了しました。");
-    }
-
-    public void AbilityBook() {
-        // 新たに作成するレシピのマテリアルを宣言
-        ItemStack AbilityBook = new ItemStack(Material.BOOK);
-
-        // 新たに作成するアイテムのマテリアルを宣言
-        meta = AbilityBook.getItemMeta();
-
-        // 剣のプロパティを変更した後、次の変数を初期化
-
-        // これはアイテムの名前を設定
-        meta.setDisplayName(ChatColor.GOLD + "Ability Setting Book");
-
-        //add Lore
-        List<String> Lore = new ArrayList<>();
-
-        Lore.add(ChatColor.WHITE+"MC_Abilityの魔法スキルのインベントリを表示します。" );
-        Lore.add("");
-        Lore.add(ChatColor.AQUA+"Create by " + ChatColor.GOLD+""+ChatColor.BOLD+"MC_Ability");
-
-        meta.setLore(Lore);
-
-        // 1番目に宣言したマテリアルを編集したマテリアルに設定
-        AbilityBook.setItemMeta(meta);
-
-        // Add the custom enchantment to make the emerald sword special
-        // In this case, we're adding the permission that modifies the damage value on level 5
-        // Level 5 is represented by the second parameter. You can change this to anything compatible with a sword
-        //item.addEnchantment(Enchantment.DAMAGE_ALL, 5);
-        AbilityBook.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL,10);
-        AbilityBook.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-
-        // create a NamespaceKey for your recipe
-        Ability_Book = new NamespacedKey(plugin, "setting_book");
-
-        // Create our custom recipe variable
-        ShapedRecipe recipe = new ShapedRecipe(Ability_Book, AbilityBook);
-
-        // Here we will set the places. E and S can represent anything, and the letters can be anything. Beware; this is case sensitive.
-        recipe.shape("EGE", "GBG", "EGE");
-
-        // Set what the letters represent.
-        // E = Emerald, S = Stick
-        recipe.setIngredient('E', Material.EMERALD);
-        recipe.setIngredient('B', Material.BOOK);
-        recipe.setIngredient('G', Material.GOLD_INGOT);
-
-        // Finally, add the recipe to the bukkit recipes
-        Bukkit.addRecipe(recipe);
     }
 
     //以下、魔法スキルGUIアイテム
     //グレー→ノーマル  アクア→レア  ゴールド→スーパーレア 赤→ハイパーレア    紫→ウルトラレア
 
-    public void StaminaAnvilSkillLv1() {
-        ItemStack StaminaBoostSkillLv1 = new ItemStack(Material.ANVIL);
-        ItemMeta meta = StaminaBoostSkillLv1.getItemMeta();
-        meta.setDisplayName(ChatColor.GRAY+"スタミナカッター" +
-                ChatColor.WHITE+""+ChatColor.BOLD+" Lv.1");
-
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.WHITE+"レア度:" +
-                ChatColor.GRAY+"" + ChatColor.BOLD+"ノーマル");
-        lore.add("");
-        lore.add(ChatColor.WHITE+"魔法スキルの一つ");
-        lore.add(ChatColor.WHITE+"アクティベートされると");
-        lore.add(ChatColor.GOLD+""+ChatColor.BOLD+"全ての道具の耐久値減少が10%低下" + ChatColor.WHITE+"する");
-        lore.add(ChatColor.AQUA+"Create by " + ChatColor.GOLD+""+ChatColor.BOLD+"MC_Ability");
-        meta.setLore(lore);
-
-        StaminaBoostSkillLv1.setItemMeta(meta);
-
-        StaminaBoostSkillLv1.addUnsafeEnchantment(Enchantment.DURABILITY,10);
-
-        stamina_Lv1 = new NamespacedKey(plugin, "stamina_lv1");
-        ShapedRecipe recipe = new ShapedRecipe(stamina_Lv1, StaminaBoostSkillLv1);
-        recipe.shape("NNN","NBN","NNN");
-        recipe.setIngredient('N', Material.NETHERITE_BLOCK);
-        recipe.setIngredient('B', Material.BOOKSHELF);
-        Bukkit.addRecipe(recipe);
-
-    }
-
-    public void StaminaAnvilLv2() {
-        ItemStack StaminaBoostSkillLv1 = new ItemStack(Material.ANVIL);
-        ItemMeta meta = StaminaBoostSkillLv1.getItemMeta();
-        meta.setDisplayName(ChatColor.AQUA+"スタミナブースト" +
-                ChatColor.WHITE+""+ChatColor.BOLD+" Lv.2");
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.WHITE+"レア度:" +
-                ChatColor.AQUA+"" + ChatColor.BOLD+"レア");
-        lore.add("");
-        lore.add(ChatColor.WHITE+"魔法スキルの一つ");
-        lore.add(ChatColor.WHITE+"アクティベートされると");
-        lore.add(ChatColor.GOLD+""+ChatColor.BOLD+"全ての道具の耐久値減少が20%低下" + ChatColor.WHITE+"する");
-        lore.add(ChatColor.AQUA+"Create by " + ChatColor.GOLD+""+ChatColor.BOLD+"MC_Ability");
-        meta.setLore(lore);
-
-        StaminaBoostSkillLv1.setItemMeta(meta);
-
-        StaminaBoostSkillLv1.addUnsafeEnchantment(Enchantment.DURABILITY,10);
-        stamina_Lv2 = new NamespacedKey(plugin, "stamina_lv2");
-        ShapedRecipe recipe = new ShapedRecipe(stamina_Lv2, StaminaBoostSkillLv1);
-        recipe.shape("NDN","NBN","NDN");
-        recipe.setIngredient('N', Material.NETHERITE_BLOCK);
-        recipe.setIngredient('B', Material.BOOKSHELF);
-        recipe.setIngredient('D', Material.DIAMOND);
-        Bukkit.addRecipe(recipe);
-    }
-
     public void RemoveRecipe() {
 
+    }
+
+    public void ShiningDiamond() {
+        ItemStack ShiningDiamond = new ItemStack(Material.DIAMOND);
+        ItemMeta ShiningDiamond_meta = ShiningDiamond.getItemMeta();
+
+        ShiningDiamond_meta.setDisplayName(ChatColor.AQUA + "" + ChatColor.BOLD + "Shining Diamond");
+
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GREEN + "地下5000mから発掘された超貴重なダイヤ");
+        lore.add("");
+        lore.add(ChatColor.AQUA+"Create by " + ChatColor.GOLD+""+ChatColor.BOLD+"MC_Ability");
+        ShiningDiamond_meta.setLore(lore);
+
+        ShiningDiamond.setItemMeta(ShiningDiamond_meta);
+
+        ShiningDiamond.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+
+        NamespacedKey name = new NamespacedKey(plugin, "shining_diamond");
+        ShapedRecipe recipe = new ShapedRecipe(name, ShiningDiamond);
+
+        recipe.shape("RGR"," D ","RGR");
+        recipe.setIngredient('R', Material.FIREWORK_ROCKET);
+        recipe.setIngredient('G', Material.GLOWSTONE_DUST);
+        recipe.setIngredient('D', Material.DIAMOND);
+
+        Bukkit.addRecipe(recipe);
+
+        ItemStack SunFlower = new ItemStack(Material.SUNFLOWER);
+        ItemMeta SunFlower_meta = SunFlower.getItemMeta();
+
+        SunFlower_meta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "大輪の輝き");
+
+        List<String> SunFlower_lore = new ArrayList<>();
+        SunFlower_lore.add(ChatColor.AQUA + "長い夏を乗り越え、夏終わりが近づいたある日。");
+        SunFlower_lore.add(ChatColor.AQUA + "一輪の向日葵が綺麗に咲いた。");
+        SunFlower_lore.add("");
+        SunFlower_lore.add(ChatColor.AQUA+"Create by " + ChatColor.GOLD+""+ChatColor.BOLD+"MC_Ability");
+        SunFlower_meta.setLore(SunFlower_lore);
+
+        AttributeModifier mod = new AttributeModifier(UUID.randomUUID(), "", 20, AttributeModifier.Operation.ADD_NUMBER,EquipmentSlot.HAND);
+        SunFlower_meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, mod);
+
+        SunFlower.setItemMeta(SunFlower_meta);
+
+        SunFlower.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 10);
+        SunFlower.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
+        SunFlower.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 7);
+
+        NamespacedKey SunFlower_name = new NamespacedKey(plugin, "god_sunflower");
+        ShapedRecipe SunFlower_recipe = new ShapedRecipe(SunFlower_name, SunFlower);
+
+        SunFlower_recipe.shape("WWW"," S ","NDN");
+        SunFlower_recipe.setIngredient('S', new RecipeChoice.ExactChoice(ShiningDiamond));
+        SunFlower_recipe.setIngredient('N', Material.NETHERITE_AXE);
+        SunFlower_recipe.setIngredient('D', Material.DIAMOND_SWORD);
+        SunFlower_recipe.setIngredient('W', Material.WITHER_SKELETON_SKULL);
+        Bukkit.addRecipe(SunFlower_recipe);
     }
 }

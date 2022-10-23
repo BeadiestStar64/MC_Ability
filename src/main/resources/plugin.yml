@@ -19,16 +19,3 @@ commands:
     permission-message: 権限がありません！
     usage: 使用方法 [MC_Ability_OpenGUI]
 
-permissions:
-  MC_Ability.*:
-    children:
-      MC_Ability.commands: true
-    description: testplugin permission description
-    default: op
-  MC_Ability.commands:
-    description: commands permission description
-    default: false
-    children:
-      MC_Ability.commands.MC_Ability_PassiveSkill: false
-      MC_Ability.commands.MC_Ability_OpenGUI: false
-

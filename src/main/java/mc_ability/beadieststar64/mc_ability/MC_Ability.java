@@ -4,6 +4,7 @@ import mc_ability.beadieststar64.mc_ability.ActiveSkill.ActivePickaxeSkillClass;
 import mc_ability.beadieststar64.mc_ability.DataBase.MySQL;
 import mc_ability.beadieststar64.mc_ability.DataBase.SQLite;
 import mc_ability.beadieststar64.mc_ability.GUI.PlayerGUI;
+import mc_ability.beadieststar64.mc_ability.MagicSkill.StaminaCutter.BlockBreakClass;
 import mc_ability.beadieststar64.mc_ability.PassiveSkill.PassivePickaxeSkillClass;
 import mc_ability.beadieststar64.mc_ability.Utility.CommandClass;
 import mc_ability.beadieststar64.mc_ability.Original_Item.OriginalItemClass;
@@ -33,7 +34,6 @@ public final class MC_Ability extends JavaPlugin implements Listener {
     public static ActivePickaxeSkillClass activePickaxeSkillClass = new ActivePickaxeSkillClass(plugins);
 
     public static int MaxPlayers = 1;
-    public static boolean IsOnlinePlayer = false;
     public static boolean Disable = false;
     public static Map<Player, Integer> GUICount = new HashMap<>();
     public static Map<Player, Boolean> IsPlayerLogOut = new HashMap<>();
@@ -41,7 +41,7 @@ public final class MC_Ability extends JavaPlugin implements Listener {
     public static int UseDateBase = 0;
 
     //プラグインバージョン設定
-    private final String version = "1.2.4";
+    private final String version = "1.2.8";
 
     @Override
     public void onEnable() {
@@ -49,10 +49,9 @@ public final class MC_Ability extends JavaPlugin implements Listener {
         plugins = this;
 
         getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "[MC_Ability]" + ChatColor.AQUA + "MC_Ability has been activate!");
-
         getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "[MC_Ability] Version is" +
                 ChatColor.RED + version +
-                ChatColor.WHITE + ".");
+                ChatColor.WHITE + "!!");
 
         //Config.ymlを作成
         File configFile = new File(getDataFolder(), "config.yml");
@@ -70,7 +69,6 @@ public final class MC_Ability extends JavaPlugin implements Listener {
             UseDateBase = 1;
             this.getConfig().getString("DataBase.Type" , "sqlite");
             sqlite.onActivate(plugins);
-
         }else{
             if(UseDataBaseName.equals("SQLite")) {
                 getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "[MC_Ability]" +
@@ -78,7 +76,6 @@ public final class MC_Ability extends JavaPlugin implements Listener {
                         ChatColor.WHITE + "が使用DBとして選択されています！");
                 UseDateBase = 1;
                 sqlite.onActivate(plugins);
-
             }else if(UseDataBaseName.equals("MySQL")) {
                 getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "[MC_Ability]" +
                         ChatColor.GOLD + "MySQL" +
@@ -86,7 +83,6 @@ public final class MC_Ability extends JavaPlugin implements Listener {
                 UseDateBase = 2;
                 GetMySQL();
                 mysql.onActivate(plugins);
-
             }else{
                 getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "[MC_Ability]" +
                         "選択された" + UseDataBaseName + "は未対応DBです！" +
@@ -97,7 +93,6 @@ public final class MC_Ability extends JavaPlugin implements Listener {
                 sqlite.onActivate(plugins);
             }
         }
-
         //MC_Abilityオリジナルアイテム追加
         OriginalItemClass originalItemClass = new OriginalItemClass(plugins);
         originalItemClass.OriginalItmCreate();
@@ -115,7 +110,7 @@ public final class MC_Ability extends JavaPlugin implements Listener {
                 sqlite.ConnectionDataBase(player);
                 break;
             case 2:
-
+                mysql.ConnectionDataBase(player);
         }
 
         if(IsPlayerLogOut.get(player) == true) {
@@ -146,12 +141,9 @@ public final class MC_Ability extends JavaPlugin implements Listener {
             case 2:
 
         }
-
         passivePickaxeSkillClass.DeleteHashMap(player);
-
         getServer().getConsoleSender().sendMessage(ChatColor.DARK_PURPLE+"ばいばい！");
         MaxPlayers--;
-
     }
 
     public static void ErrorLog(Exception e) {
@@ -191,60 +183,6 @@ public final class MC_Ability extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new PassivePickaxeSkillClass(this), this);
         getServer().getPluginManager().registerEvents(new PlayerGUI(this), this);
     }
-
-    /*
-    public void PutGUI(Player player) {
-        GUICount.put(player, (GUICount.get(player) + 1));
-        String SQL = ("");
-        String InsertData = ("");
-
-        switch (GUICount.get(player)) {
-            case 1:
-                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_MATERIAL=? WHERE UUID=?");
-                PlayerGUI.inv.get(player);
-                break;
-            case 2:
-                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_NAME WHERE=? UUID=?");
-                break;
-            case 3:
-                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_LORE1 WHERE=? UUID=?");
-                break;
-            case 4:
-                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_LORE2 WHERE=? UUID=?");
-                break;
-            case 5:
-                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_LORE3 WHERE=? UUID=?");
-                break;
-            case 6:
-                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_LORE4 WHERE=? UUID=?");
-                break;
-            case 7:
-                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_LORE5 WHERE=? UUID=?");
-                break;
-            case 8:
-                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_LORE6 WHERE=? UUID=?");
-                break;
-            case 9:
-                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_ADD_ENCHANTMENT_NAME=? WHERE UUID=?");
-                break;
-            case 10:
-                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_ADD_ENCHANTMENT_LEVEL=? WHERE UUID=?");
-                break;
-            case 11:
-                SQL = ("UPDATE GUI SET FIRST_INVENTORY_ITEM_REGISTER_KEY=? WHERE UUID=?");
-                break;
-        }
-
-        try {
-            PreparedStatement prepStmt = con.prepareStatement(SQL);
-            prepStmt.setString(1, InsertData);
-            prepStmt.setString(2, player.getUniqueId().toString());
-        }catch (Exception e) {
-            ErrorLog(e);
-        }
-    }
-
-     */
 
     public void GetMySQL() {
         mysql.User = getConfig().getString("DataBase.Login_User");

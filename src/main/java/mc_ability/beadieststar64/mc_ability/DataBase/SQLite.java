@@ -1,14 +1,12 @@
 package mc_ability.beadieststar64.mc_ability.DataBase;
 
 import mc_ability.beadieststar64.mc_ability.ActiveSkill.ActivePickaxeSkillClass;
-import mc_ability.beadieststar64.mc_ability.GUI.PlayerGUI;
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
-import mc_ability.beadieststar64.mc_ability.Original_Item.OriginalItemClass;
+import mc_ability.beadieststar64.mc_ability.MagicSkill.StaminaCutter.StaminaCutterClass;
 import mc_ability.beadieststar64.mc_ability.PassiveSkill.PassivePickaxeSkillClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.io.File;
 import java.sql.*;
@@ -90,6 +88,19 @@ public class SQLite {
                         ", UUID" +
                         ", IS_STAMINA_CUT_LV_ONE" +
                         ", IS_STAMINA_CUT_LV_TWO" +
+                        ", IS_STAMINA_CUT_LV_THREE" +
+                        ", IS_STAMINA_CUT_LV_FOUR" +
+                        ", IS_STAMINA_CUT_LV_FIVE" +
+                        ", STAMINA_CUT_LV_ONE_NOW_DURABILITY" +
+                        ", STAMINA_CUT_LV_TWO_NOW_DURABILITY" +
+                        ", STAMINA_CUT_LV_THREE_NOW_DURABILITY" +
+                        ", STAMINA_CUT_LV_FOUR_NOW_DURABILITY" +
+                        ", STAMINA_CUT_LV_FIVE_NOW_DURABILITY" +
+                        ", STAMINA_CUT_LV_ONE_MAX_DURABILITY" +
+                        ", STAMINA_CUT_LV_TWO_MAX_DURABILITY" +
+                        ", STAMINA_CUT_LV_THREE_MAX_DURABILITY" +
+                        ", STAMINA_CUT_LV_FOUR_MAX_DURABILITY" +
+                        ", STAMINA_CUT_LV_FIVE_MAX_DURABILITY" +
                         ");");
                 con.commit();
                 stmt.close();
@@ -112,7 +123,7 @@ public class SQLite {
 
     public void ConnectionDataBase(Player player) {
 
-        plugin.getLogger().info(player + "さんがログインしました。");
+        plugin.getLogger().info(player.getName() + "さんがログインしました。");
 
         Map<String, Boolean> IncludePlayer = new HashMap<String, Boolean>();
 
@@ -137,7 +148,7 @@ public class SQLite {
                     UpdatePlayer = "UPDATE PLAYER SET MCID=? WHERE UUID=?";
                     UpdateActiveSkill = "UPDATE ACTIVE_SKILL SET MCID=? WHERE UUID=?";
                     UpdatePassiveSkill = "UPDATE PASSIVE_SKILL SET MCID=? WHERE UUID=?";
-                    UpdateGUI = "UPDATE GUI SET MCID=? WHERE UUID=?";
+                    UpdateGUI = "UPDATE MAGIC_SKILL SET MCID=? WHERE UUID=?";
                 }
             }
             rs.close();
@@ -228,16 +239,42 @@ public class SQLite {
                 prepStmt3.setString(2, player.getUniqueId().toString());
                 prepStmt3.addBatch();
 
-                PreparedStatement prepStmt4 = con.prepareStatement("INSERT INTO GUI(" +
+                PreparedStatement prepStmt4 = con.prepareStatement("INSERT INTO MAGIC_SKILL(" +
                         "MCID" +
                         ", UUID" +
                         ", IS_STAMINA_CUT_LV_ONE" +
                         ", IS_STAMINA_CUT_LV_TWO" +
+                        ", IS_STAMINA_CUT_LV_THREE" +
+                        ", IS_STAMINA_CUT_LV_FOUR" +
+                        ", IS_STAMINA_CUT_LV_FIVE" +
+                        ", STAMINA_CUT_LV_ONE_NOW_DURABILITY" +
+                        ", STAMINA_CUT_LV_TWO_NOW_DURABILITY" +
+                        ", STAMINA_CUT_LV_THREE_NOW_DURABILITY" +
+                        ", STAMINA_CUT_LV_FOUR_NOW_DURABILITY" +
+                        ", STAMINA_CUT_LV_FIVE_NOW_DURABILITY" +
+                        ", STAMINA_CUT_LV_ONE_MAX_DURABILITY" +
+                        ", STAMINA_CUT_LV_TWO_MAX_DURABILITY" +
+                        ", STAMINA_CUT_LV_THREE_MAX_DURABILITY" +
+                        ", STAMINA_CUT_LV_FOUR_MAX_DURABILITY" +
+                        ", STAMINA_CUT_LV_FIVE_MAX_DURABILITY" +
                         ") VALUES (" +
                         "?" +
                         ", ?" +
                         ", 0" +
                         ", 0" +
+                        ", 0" +
+                        ", 0" +
+                        ", 0" +
+                        ", 1500" +
+                        ", 1000" +
+                        ", 800" +
+                        ", 600" +
+                        ", 300" +
+                        ", 1500" +
+                        ", 1000" +
+                        ", 800" +
+                        ", 600" +
+                        ", 300" +
                         ");");
                 prepStmt4.setString(1, player.getName());
                 prepStmt4.setString(2, player.getUniqueId().toString());
@@ -296,8 +333,58 @@ public class SQLite {
             //プレイヤーのアクティブスキルデータを取得
             InsertActivePickaxeSkillQuery(player);
 
-            plugin.getLogger().info("test:" + MC_Ability.IsPlayerLogOut.get(player));
+            //プレイヤーの魔法スキルデータの取得
+            GetPlayersMagicSkillData(player);
 
+        }catch (Exception e) {
+            MC_Ability.ErrorLog(e);
+        }
+    }
+
+    public void GetPlayersMagicSkillData(Player player) {
+        String SQL = ("SELECT IS_STAMINA_CUT_LV_ONE,IS_STAMINA_CUT_LV_TWO,IS_STAMINA_CUT_LV_THREE,IS_STAMINA_CUT_LV_FOUR,IS_STAMINA_CUT_LV_FIVE,STAMINA_CUT_LV_ONE_NOW_DURABILITY,STAMINA_CUT_LV_TWO_NOW_DURABILITY,STAMINA_CUT_LV_THREE_NOW_DURABILITY,STAMINA_CUT_LV_FOUR_NOW_DURABILITY,STAMINA_CUT_LV_FIVE_NOW_DURABILITY,STAMINA_CUT_LV_ONE_MAX_DURABILITY,STAMINA_CUT_LV_TWO_MAX_DURABILITY,STAMINA_CUT_LV_THREE_MAX_DURABILITY,STAMINA_CUT_LV_FOUR_MAX_DURABILITY,STAMINA_CUT_LV_FIVE_MAX_DURABILITY FROM MAGIC_SKILL WHERE UUID=?");
+
+        try {
+            PreparedStatement prepStmt = con.prepareStatement(SQL);
+            prepStmt.setString(1, player.getUniqueId().toString());
+            ResultSet RS = prepStmt.executeQuery();
+            con.commit();
+
+            if(RS.next()) {
+                StaminaCutterClass.StaminaCutterLv1_Activate.put(player, false);
+                StaminaCutterClass.StaminaCutterLv2_Activate.put(player, false);
+                StaminaCutterClass.StaminaCutterLv3_Activate.put(player, false);
+                StaminaCutterClass.StaminaCutterLv4_Activate.put(player, false);
+                StaminaCutterClass.StaminaCutterLv5_Activate.put(player, false);
+                if(RS.getInt(1) == 1) {
+                    StaminaCutterClass.StaminaCutterLv1_Activate.put(player, true);
+                }
+                if(RS.getInt(2) == 1) {
+                    StaminaCutterClass.StaminaCutterLv2_Activate.put(player, true);
+                }
+                if(RS.getInt(3) == 1) {
+                    StaminaCutterClass.StaminaCutterLv3_Activate.put(player, true);
+                }
+                if(RS.getInt(4) == 1) {
+                    StaminaCutterClass.StaminaCutterLv4_Activate.put(player, true);
+                }
+                if(RS.getInt(5) == 1) {
+                    StaminaCutterClass.StaminaCutterLv5_Activate.put(player, true);
+                }
+
+                StaminaCutterClass.StaminaCutterLv1_NowStamina.put(player, RS.getInt(6));
+                StaminaCutterClass.StaminaCutterLv2_NowStamina.put(player, RS.getInt(7));
+                StaminaCutterClass.StaminaCutterLv3_NowStamina.put(player, RS.getInt(8));
+                StaminaCutterClass.StaminaCutterLv4_NowStamina.put(player, RS.getInt(9));
+                StaminaCutterClass.StaminaCutterLv5_NowStamina.put(player, RS.getInt(10));
+                StaminaCutterClass.StaminaCutterLv1_MaxStamina.put(player, RS.getInt(11));
+                StaminaCutterClass.StaminaCutterLv2_MaxStamina.put(player, RS.getInt(12));
+                StaminaCutterClass.StaminaCutterLv3_MaxStamina.put(player, RS.getInt(13));
+                StaminaCutterClass.StaminaCutterLv4_MaxStamina.put(player, RS.getInt(14));
+                StaminaCutterClass.StaminaCutterLv5_MaxStamina.put(player, RS.getInt(15));
+            }
+            RS.close();
+            prepStmt.close();
         }catch (Exception e) {
             MC_Ability.ErrorLog(e);
         }
