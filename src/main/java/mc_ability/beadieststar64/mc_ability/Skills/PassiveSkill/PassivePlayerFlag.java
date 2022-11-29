@@ -1,4 +1,4 @@
-package mc_ability.beadieststar64.mc_ability.PassiveSkill;
+package mc_ability.beadieststar64.mc_ability.Skills.PassiveSkill;
 
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
 import org.bukkit.entity.Player;

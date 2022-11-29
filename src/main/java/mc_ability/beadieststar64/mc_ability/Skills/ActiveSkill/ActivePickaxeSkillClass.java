@@ -1,6 +1,5 @@
-package mc_ability.beadieststar64.mc_ability.ActiveSkill;
+package mc_ability.beadieststar64.mc_ability.Skills.ActiveSkill;
 
-import com.sun.tools.javac.jvm.Items;
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -14,21 +13,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.bukkit.Bukkit.*;
 
 public class ActivePickaxeSkillClass extends ExtendedActiveSkill implements Listener {
 

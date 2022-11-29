@@ -1,7 +1,9 @@
-package mc_ability.beadieststar64.mc_ability.GUI;
+package mc_ability.beadieststar64.mc_ability.Utility.GUI;
 
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
-import mc_ability.beadieststar64.mc_ability.MagicSkill.StaminaCutter.StaminaCutterClass;
+import mc_ability.beadieststar64.mc_ability.Skills.MagicSkill.Aegis_Barrier.Aegis_Barrier_LUNA;
+import mc_ability.beadieststar64.mc_ability.Skills.MagicSkill.Aegis_Barrier.Aegis_Barrier_Lv1;
+import mc_ability.beadieststar64.mc_ability.Skills.MagicSkill.StaminaCutter.StaminaCutterClass;
 import mc_ability.beadieststar64.mc_ability.Original_Item.original_item.Stamina_Cutter.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,6 +29,7 @@ public class PlayerGUI extends ExtenderForGUI implements Listener {
     public static Map<Player, Inventory> inv = new HashMap<>();
     public static Map<Player, Inventory> inv2 = new HashMap<>();
     public static Map<Player, Inventory> inv3 = new HashMap<>();
+    public static Map<Player, Inventory> Aegis_Barrier_inv = new HashMap<>();
 
     public static Map<Player, Integer> menus = new HashMap<Player, Integer>();
 
@@ -52,6 +55,7 @@ public class PlayerGUI extends ExtenderForGUI implements Listener {
         StaminaCut(player);
         MagnetChest(player);
         CriticalBoost(player);
+        Aegis_Barrier(player);
 
         //Cancel Item
         ItemStack item = new ItemStack(Material.BARRIER);
@@ -125,8 +129,13 @@ public class PlayerGUI extends ExtenderForGUI implements Listener {
                     menus.put(player, 2);
                     SecondGUI(player);
                     player.openInventory(inv3.get(player));
+                    break;
 
                 case 2:
+                    menus.put(player, 3);
+                    SecondGUI(player);
+                    player.openInventory(Aegis_Barrier_inv.get(player));
+                    break;
 
                 case 3:
 
@@ -180,6 +189,17 @@ public class PlayerGUI extends ExtenderForGUI implements Listener {
                 break;
 
             case 2:
+
+            case 3:
+
+                //イージスバリア
+                Aegis_Barrier_inv.put(player, Bukkit.createInventory(player, 18, ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "イージスバリア"));
+
+                Aegis_Barrier_inv.get(player).setItem(0, Aegis_Barrier_Lv1.AegisbarrierLv1);
+                Aegis_Barrier_inv.get(player).setItem(13, Aegis_Barrier_LUNA.AegisbarrierLUNA);
+
+            case 4:
+
 
         }
     }
@@ -365,6 +385,27 @@ public class PlayerGUI extends ExtenderForGUI implements Listener {
         item.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
         inv.get(player).setItem(0, item);
+    }
+
+    public void Aegis_Barrier(Player player) {
+        ItemStack Aegis_Barrier_Stack = new ItemStack(Material.SHIELD);
+        ItemMeta Aegis_Barrier_Meta = Aegis_Barrier_Stack.getItemMeta();
+
+        Aegis_Barrier_Meta.setDisplayName(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "イージスバリア");
+
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.AQUA + "" + ChatColor.BOLD + "イージスバリアの設定をします");
+        lore.add("");
+        lore.add(ChatColor.GOLD + "Create by " + ChatColor.AQUA + "" + ChatColor.BOLD + "MC_ABility");
+
+        Aegis_Barrier_Meta.setLore(lore);
+
+        Aegis_Barrier_Stack.setItemMeta(Aegis_Barrier_Meta);
+
+        Aegis_Barrier_Stack.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
+        Aegis_Barrier_Stack.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+        inv.get(player).setItem(2,Aegis_Barrier_Stack);
     }
 
     public void MagnetChest(Player player) {

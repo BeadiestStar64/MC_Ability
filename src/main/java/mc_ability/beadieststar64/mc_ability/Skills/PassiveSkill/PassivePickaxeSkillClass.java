@@ -1,9 +1,7 @@
-package mc_ability.beadieststar64.mc_ability.PassiveSkill;
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import jdk.jfr.Enabled;
-import mc_ability.beadieststar64.mc_ability.DataBase.SQLite;
+package mc_ability.beadieststar64.mc_ability.Skills.PassiveSkill;
+import mc_ability.beadieststar64.mc_ability.Utility.DataBase.SQLite;
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
-import mc_ability.beadieststar64.mc_ability.MagicSkill.StaminaCutter.BlockBreakClass;
+import mc_ability.beadieststar64.mc_ability.Skills.MagicSkill.StaminaCutter.BlockBreakClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,31 +10,17 @@ import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.entity.Boss;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemBreakEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-import org.checkerframework.checker.units.qual.A;
 
-import java.io.File;
-import java.net.ConnectException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.bukkit.Bukkit.getLogger;
 import static org.bukkit.Bukkit.getPlayer;
 
 public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Listener {

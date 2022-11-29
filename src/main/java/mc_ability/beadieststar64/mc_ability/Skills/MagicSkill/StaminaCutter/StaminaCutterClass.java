@@ -1,6 +1,6 @@
-package mc_ability.beadieststar64.mc_ability.MagicSkill.StaminaCutter;
+package mc_ability.beadieststar64.mc_ability.Skills.MagicSkill.StaminaCutter;
 
-import mc_ability.beadieststar64.mc_ability.DataBase.SQLite;
+import mc_ability.beadieststar64.mc_ability.Utility.DataBase.SQLite;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

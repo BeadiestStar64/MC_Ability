@@ -1,4 +1,4 @@
-package mc_ability.beadieststar64.mc_ability.DataBase;
+package mc_ability.beadieststar64.mc_ability.Utility.DataBase;
 
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
 import org.bukkit.Bukkit;

@@ -1,4 +1,4 @@
-package mc_ability.beadieststar64.mc_ability.ActiveSkill;
+package mc_ability.beadieststar64.mc_ability.Skills.ActiveSkill;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;

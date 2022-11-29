@@ -1,8 +1,8 @@
 package mc_ability.beadieststar64.mc_ability.Utility;
 
-import mc_ability.beadieststar64.mc_ability.GUI.PlayerGUI;
+import mc_ability.beadieststar64.mc_ability.Utility.GUI.PlayerGUI;
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
-import mc_ability.beadieststar64.mc_ability.PassiveSkill.PassivePickaxeSkillClass;
+import mc_ability.beadieststar64.mc_ability.Skills.PassiveSkill.PassivePickaxeSkillClass;
 import mc_ability.beadieststar64.mc_ability.Utility.Difficulty.Difficulty_Class;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

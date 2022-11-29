@@ -1,6 +1,5 @@
 package mc_ability.beadieststar64.mc_ability.Utility.Difficulty;
 
-import mc_ability.beadieststar64.mc_ability.MC_Ability;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,7 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-import static mc_ability.beadieststar64.mc_ability.PassiveSkill.ExtendedPassiveSkill.plugin;
+import static mc_ability.beadieststar64.mc_ability.Skills.PassiveSkill.ExtendedPassiveSkill.plugin;
 
 public class Difficulty_Class implements Listener {
 

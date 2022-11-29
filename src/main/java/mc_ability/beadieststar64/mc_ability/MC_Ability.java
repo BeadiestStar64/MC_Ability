@@ -1,22 +1,21 @@
 package mc_ability.beadieststar64.mc_ability;
 
-import mc_ability.beadieststar64.mc_ability.ActiveSkill.ActivePickaxeSkillClass;
-import mc_ability.beadieststar64.mc_ability.ActiveSkill.Comet_Glitter_Class;
-import mc_ability.beadieststar64.mc_ability.DataBase.MySQL;
-import mc_ability.beadieststar64.mc_ability.DataBase.SQLite;
-import mc_ability.beadieststar64.mc_ability.GUI.PlayerGUI;
-import mc_ability.beadieststar64.mc_ability.MagicSkill.StaminaCutter.BlockBreakClass;
+import mc_ability.beadieststar64.mc_ability.Skills.ActiveSkill.ActivePickaxeSkillClass;
+import mc_ability.beadieststar64.mc_ability.Skills.ActiveSkill.Comet_Glitter_Class;
+import mc_ability.beadieststar64.mc_ability.Utility.DataBase.MySQL;
+import mc_ability.beadieststar64.mc_ability.Utility.DataBase.SQLite;
+import mc_ability.beadieststar64.mc_ability.Utility.GUI.PlayerGUI;
+import mc_ability.beadieststar64.mc_ability.Skills.MagicSkill.StaminaCutter.BlockBreakClass;
 import mc_ability.beadieststar64.mc_ability.Original_Item.Drop_Item.DropItemClass;
-import mc_ability.beadieststar64.mc_ability.Original_Item.Un_Create_Item.MainProcess;
 import mc_ability.beadieststar64.mc_ability.Original_Item.original_item.Critical_Boost.Critical_Boost_Base_Class;
-import mc_ability.beadieststar64.mc_ability.PassiveSkill.PassivePickaxeSkillClass;
+import mc_ability.beadieststar64.mc_ability.Skills.PassiveSkill.PassivePickaxeSkillClass;
 import mc_ability.beadieststar64.mc_ability.Utility.CommandClass;
 import mc_ability.beadieststar64.mc_ability.Original_Item.OriginalItemClass;
 import mc_ability.beadieststar64.mc_ability.Utility.Difficulty.Difficulty_Class;
+import mc_ability.beadieststar64.mc_ability.Utility.Register_ItemClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,7 +27,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import static mc_ability.beadieststar64.mc_ability.PassiveSkill.ExtendedPassiveSkill.plugin;
+import static mc_ability.beadieststar64.mc_ability.Skills.PassiveSkill.ExtendedPassiveSkill.plugin;
 
 public final class MC_Ability extends JavaPlugin implements Listener {
 
@@ -111,18 +110,10 @@ public final class MC_Ability extends JavaPlugin implements Listener {
                 sqlite.onActivate(plugins);
             }
         }
-        //MC_Abilityオリジナルアイテム追加
-        OriginalItemClass originalItemClass = new OriginalItemClass(plugins);
-        originalItemClass.OriginalItmCreate();
 
-        PlayerGUI playerGUI = new PlayerGUI(this);
-        playerGUI.CreateGUI();
+        Register_ItemClass register = new Register_ItemClass();
+        register.Register_Item();
 
-        MainProcess main = new MainProcess();
-        main.CreateItems();
-
-        Difficulty_Class difficulty_class = new Difficulty_Class();
-        difficulty_class.Setting();
     }
 
     @EventHandler

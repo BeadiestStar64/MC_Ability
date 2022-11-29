@@ -1,4 +1,4 @@
-package mc_ability.beadieststar64.mc_ability.GUI;
+package mc_ability.beadieststar64.mc_ability.Utility.GUI;
 
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
 

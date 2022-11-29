@@ -1,9 +1,9 @@
-package mc_ability.beadieststar64.mc_ability.DataBase;
+package mc_ability.beadieststar64.mc_ability.Utility.DataBase;
 
-import mc_ability.beadieststar64.mc_ability.ActiveSkill.ActivePickaxeSkillClass;
+import mc_ability.beadieststar64.mc_ability.Skills.ActiveSkill.ActivePickaxeSkillClass;
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
-import mc_ability.beadieststar64.mc_ability.MagicSkill.StaminaCutter.StaminaCutterClass;
-import mc_ability.beadieststar64.mc_ability.PassiveSkill.PassivePickaxeSkillClass;
+import mc_ability.beadieststar64.mc_ability.Skills.MagicSkill.StaminaCutter.StaminaCutterClass;
+import mc_ability.beadieststar64.mc_ability.Skills.PassiveSkill.PassivePickaxeSkillClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
