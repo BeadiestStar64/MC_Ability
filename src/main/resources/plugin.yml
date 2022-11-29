@@ -8,14 +8,36 @@ commands:
   MC_Ability_PassiveSkill:
     aliases: ShowME
     description: コマンド送信者のMinerのEXPを知ることができます
-    permission: op
+    permission: mc_ability.commands.normal
     permission-message: Permission denied
     usage: 使用方法 [MC_Ability_PassiveSkill Show Miner EXP]
 
   MC_Ability_OpenGUI:
     aliases: open
     description: Test GUIを開きます。
-    permission: op
+    permission: mc_ability.commands.normal
     permission-message: 権限がありません！
     usage: 使用方法 [MC_Ability_OpenGUI]
+
+  MC_Ability_Difficulty:
+    aliases: difficulty
+    description: MC_Abilityの難易度を選択します。
+    permission: mc_ability.commands.op
+    permission-message: 権限がありません!!
+    usage: 使用方法 [Difficulty]
+
+  permissions:
+    mc_ability.op:
+      children:
+        mc_ability.commands: op
+      description: testplugin permission description
+      default: op
+    mc_ability.commands:
+      description: commands permission description
+      default: true
+    mc_ability.commands.normal:
+      description: test command permission description
+      default: false
+      children:
+        mc_ability.commands: false
 

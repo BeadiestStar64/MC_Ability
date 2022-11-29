@@ -82,7 +82,6 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
         SetPlayerMinerEXP.put(player, 0.0);
 
         BlockBreakClass breakclass = new BlockBreakClass();
-        breakclass.BlockBreak(player);
 
         if(!NextPlayerMinerLevel.containsKey(player) || !OverRideMinerLevel.containsKey(player) || !bool.containsKey(player)) {
             SetMethod(player);
@@ -118,17 +117,15 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
     public void LevelBarShow (Player player) {
         if(MinerLevelBossBar.containsKey(player)) {
             MinerLevel.setProgress(GetPlayerMinerEXP.get(player)/NextPlayerMinerEXP.get(player));
-            MinerLevel.setTitle(ChatColor.GREEN+""+ChatColor.BOLD+"採掘 Lv."+ChatColor.GOLD+GetPlayerMinerLevel.get(player));
+            MinerLevel.setTitle(ChatColor.WHITE+""+ChatColor.BOLD+"採掘 Lv."+ChatColor.GOLD+GetPlayerMinerLevel.get(player));
             MinerLevelBossBar.put(player, MinerLevel);
             MinerLevel.addPlayer(player);
         }else{
             MinerLevel.setProgress(GetPlayerMinerEXP.get(player)/NextPlayerMinerEXP.get(player));
-            MinerLevel.setTitle(ChatColor.GREEN+""+ChatColor.BOLD+"採掘 Lv."+ChatColor.GOLD+GetPlayerMinerLevel.get(player));
+            MinerLevel.setTitle(ChatColor.WHITE+""+ChatColor.BOLD+"採掘 Lv."+ChatColor.GOLD+GetPlayerMinerLevel.get(player));
             MinerLevelBossBar.put(player, MinerLevel);
             MinerLevel.addPlayer(player);
         }
-
-        getLogger().info("OverRideMinerLevelは"+OverRideMinerLevel.get(player).toString());
 
         if(OverRideMinerLevel.get(player)) {
             bool.put(player, true);
@@ -136,21 +133,17 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
             bool.put(player, false);
             DisplayMinerBossBarTime.put(player, 5.0);
         }
-        getLogger().info("boolは"+bool.get(player).toString());
         CountDown(player);
     }
 
     public void CountDown(Player player) {
 
         finalBool.put(player, bool.get(player));
-        getLogger().info("finalBoolは"+finalBool.get(player));
-
 
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
                 //ボスバーが未表示の時
-                getLogger().info(DisplayMinerBossBarTime.get(player).toString());
                 OverRideMinerLevel.put(player, true);
 
                 if(DisplayMinerBossBarTime.get(player) <= 0.0) {
@@ -165,7 +158,6 @@ public class PassivePickaxeSkillClass extends ExtendedPassiveSkill implements Li
                 DisplayMinerBossBarTime.put(player, (DisplayMinerBossBarTime.get(player) - 1.0));
 
                 if(finalBool.get(player)) {
-                    getLogger().info("Cancel!");
                     cancel();
                     OverRideMinerLevel.put(player, false);
                     bool.put(player, false);

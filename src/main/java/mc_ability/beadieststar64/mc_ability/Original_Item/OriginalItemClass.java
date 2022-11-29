@@ -29,6 +29,10 @@ public class OriginalItemClass extends ExtenderOriginalItemClass implements List
     public Stamina_Cutter_Lv4 cutterLv4Class = new Stamina_Cutter_Lv4(plugin);
     public Stamina_Cutter_Lv5 cutterLv5Class = new Stamina_Cutter_Lv5(plugin);
 
+    public ItemStack ShiningDiamond = new ItemStack(Material.DIAMOND);
+    public ItemStack SunFlower = new ItemStack(Material.SUNFLOWER);
+
+
     public OriginalItemClass(MC_Ability plugin) {
         super(plugin);
     }
@@ -57,7 +61,7 @@ public class OriginalItemClass extends ExtenderOriginalItemClass implements List
     }
 
     public void ShiningDiamond() {
-        ItemStack ShiningDiamond = new ItemStack(Material.DIAMOND);
+        ShiningDiamond = new ItemStack(Material.DIAMOND);
         ItemMeta ShiningDiamond_meta = ShiningDiamond.getItemMeta();
 
         ShiningDiamond_meta.setDisplayName(ChatColor.AQUA + "" + ChatColor.BOLD + "Shining Diamond");
@@ -72,17 +76,17 @@ public class OriginalItemClass extends ExtenderOriginalItemClass implements List
 
         ShiningDiamond.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
 
-        NamespacedKey name = new NamespacedKey(plugin, "shining_diamond");
-        ShapedRecipe recipe = new ShapedRecipe(name, ShiningDiamond);
+        NamespacedKey ShiningDiamond_Name = new NamespacedKey(plugin, "shining_diamond");
+        ShapedRecipe ShiningDiamond_Recipe = new ShapedRecipe(ShiningDiamond_Name, ShiningDiamond);
 
-        recipe.shape("RGR"," D ","RGR");
-        recipe.setIngredient('R', Material.FIREWORK_ROCKET);
-        recipe.setIngredient('G', Material.GLOWSTONE_DUST);
-        recipe.setIngredient('D', Material.DIAMOND);
+        ShiningDiamond_Recipe.shape("RGR"," D ","RGR");
+        ShiningDiamond_Recipe.setIngredient('R', Material.FIREWORK_ROCKET);
+        ShiningDiamond_Recipe.setIngredient('G', Material.GLOWSTONE_DUST);
+        ShiningDiamond_Recipe.setIngredient('D', Material.DIAMOND);
 
-        Bukkit.addRecipe(recipe);
+        Bukkit.addRecipe(ShiningDiamond_Recipe);
 
-        ItemStack SunFlower = new ItemStack(Material.SUNFLOWER);
+        SunFlower = new ItemStack(Material.SUNFLOWER);
         ItemMeta SunFlower_meta = SunFlower.getItemMeta();
 
         SunFlower_meta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "大輪の輝き");
@@ -106,8 +110,10 @@ public class OriginalItemClass extends ExtenderOriginalItemClass implements List
         NamespacedKey SunFlower_name = new NamespacedKey(plugin, "god_sunflower");
         ShapedRecipe SunFlower_recipe = new ShapedRecipe(SunFlower_name, SunFlower);
 
+        ItemStack copy = ShiningDiamond.clone();
+
         SunFlower_recipe.shape("WWW"," S ","NDN");
-        SunFlower_recipe.setIngredient('S', new RecipeChoice.ExactChoice(ShiningDiamond));
+        SunFlower_recipe.setIngredient('S', new RecipeChoice.ExactChoice(copy));
         SunFlower_recipe.setIngredient('N', Material.NETHERITE_AXE);
         SunFlower_recipe.setIngredient('D', Material.DIAMOND_SWORD);
         SunFlower_recipe.setIngredient('W', Material.WITHER_SKELETON_SKULL);

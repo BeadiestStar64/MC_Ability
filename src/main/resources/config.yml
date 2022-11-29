@@ -1,3 +1,5 @@
+Defficulty: "normal"
+
 DataBase:
   Type: "SQLite"
   ###

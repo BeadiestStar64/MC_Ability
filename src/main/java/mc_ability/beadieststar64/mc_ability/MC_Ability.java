@@ -1,15 +1,22 @@
 package mc_ability.beadieststar64.mc_ability;
 
 import mc_ability.beadieststar64.mc_ability.ActiveSkill.ActivePickaxeSkillClass;
+import mc_ability.beadieststar64.mc_ability.ActiveSkill.Comet_Glitter_Class;
 import mc_ability.beadieststar64.mc_ability.DataBase.MySQL;
 import mc_ability.beadieststar64.mc_ability.DataBase.SQLite;
 import mc_ability.beadieststar64.mc_ability.GUI.PlayerGUI;
 import mc_ability.beadieststar64.mc_ability.MagicSkill.StaminaCutter.BlockBreakClass;
+import mc_ability.beadieststar64.mc_ability.Original_Item.Drop_Item.DropItemClass;
+import mc_ability.beadieststar64.mc_ability.Original_Item.Un_Create_Item.MainProcess;
+import mc_ability.beadieststar64.mc_ability.Original_Item.original_item.Critical_Boost.Critical_Boost_Base_Class;
 import mc_ability.beadieststar64.mc_ability.PassiveSkill.PassivePickaxeSkillClass;
 import mc_ability.beadieststar64.mc_ability.Utility.CommandClass;
 import mc_ability.beadieststar64.mc_ability.Original_Item.OriginalItemClass;
+import mc_ability.beadieststar64.mc_ability.Utility.Difficulty.Difficulty_Class;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,6 +27,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
+import static mc_ability.beadieststar64.mc_ability.PassiveSkill.ExtendedPassiveSkill.plugin;
 
 public final class MC_Ability extends JavaPlugin implements Listener {
 
@@ -40,18 +49,27 @@ public final class MC_Ability extends JavaPlugin implements Listener {
 
     public static int UseDateBase = 0;
 
+    public static String Difficulty = "";
+
     //プラグインバージョン設定
-    private final String version = "1.2.8";
+    private final String version = "1.2.13";
 
     @Override
     public void onEnable() {
 
         plugins = this;
 
+        //難易度を取得
+        FileConfiguration config = getConfig();
+        Difficulty = config.getString("Defficulty","easy");
+
         getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "[MC_Ability]" + ChatColor.AQUA + "MC_Ability has been activate!");
         getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "[MC_Ability] Version is" +
                 ChatColor.RED + version +
                 ChatColor.WHITE + "!!");
+        getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "[MC_Ability] 難易度は" +
+                ChatColor.AQUA + Difficulty +
+                ChatColor.WHITE + "です");
 
         //Config.ymlを作成
         File configFile = new File(getDataFolder(), "config.yml");
@@ -99,6 +117,12 @@ public final class MC_Ability extends JavaPlugin implements Listener {
 
         PlayerGUI playerGUI = new PlayerGUI(this);
         playerGUI.CreateGUI();
+
+        MainProcess main = new MainProcess();
+        main.CreateItems();
+
+        Difficulty_Class difficulty_class = new Difficulty_Class();
+        difficulty_class.Setting();
     }
 
     @EventHandler
@@ -175,6 +199,7 @@ public final class MC_Ability extends JavaPlugin implements Listener {
     public void RegisterCommand() {
         getCommand("MC_Ability_PassiveSkill").setExecutor(new CommandClass());
         getCommand("MC_Ability_OpenGUI").setExecutor(new CommandClass());
+        getCommand("MC_Ability_Difficulty").setExecutor(new CommandClass());
     }
 
     public void RegisterEvents() {
@@ -182,6 +207,11 @@ public final class MC_Ability extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ActivePickaxeSkillClass(this), this);
         getServer().getPluginManager().registerEvents(new PassivePickaxeSkillClass(this), this);
         getServer().getPluginManager().registerEvents(new PlayerGUI(this), this);
+        getServer().getPluginManager().registerEvents(new BlockBreakClass(), this);
+        getServer().getPluginManager().registerEvents(new DropItemClass(this), this);
+        getServer().getPluginManager().registerEvents(new Critical_Boost_Base_Class(), this);
+        getServer().getPluginManager().registerEvents(new Comet_Glitter_Class(), this);
+        getServer().getPluginManager().registerEvents(new Difficulty_Class(), this);
     }
 
     public void GetMySQL() {
@@ -190,5 +220,14 @@ public final class MC_Ability extends JavaPlugin implements Listener {
         mysql.Host = getConfig().getString("DataBase.Host_Name");
         mysql.Port = getConfig().getInt("DataBase.Port");
         mysql.DataBaseName = getConfig().getString("DataBase.DataBaseName");
+    }
+
+    public void SaveDifficulty() {
+        FileConfiguration config = getConfig();
+        Bukkit.getLogger().info("難易度が" + plugin.Difficulty + "に変更されました");
+        config.set("Defficulty",Difficulty);
+        saveConfig();
+        reloadConfig();
+        getConfig();
     }
 }

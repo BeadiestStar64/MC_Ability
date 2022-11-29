@@ -3,14 +3,13 @@ package mc_ability.beadieststar64.mc_ability.Utility;
 import mc_ability.beadieststar64.mc_ability.GUI.PlayerGUI;
 import mc_ability.beadieststar64.mc_ability.MC_Ability;
 import mc_ability.beadieststar64.mc_ability.PassiveSkill.PassivePickaxeSkillClass;
-import org.bukkit.Bukkit;
+import mc_ability.beadieststar64.mc_ability.Utility.Difficulty.Difficulty_Class;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -29,7 +28,8 @@ public class CommandClass implements CommandExecutor, TabCompleter {
         }else {
 
             player = (Player) sender;
-            if(command.getName().equalsIgnoreCase("MC_Ability_PassiveSkill")) {
+
+            if(command.getName().equalsIgnoreCase("MC_Ability_PassiveSkill")) { //Passive Skill関連
                 if(args.length > 0) {
                     if(args[0].equalsIgnoreCase("Show")) {
                         if(args[1].equalsIgnoreCase("Miner")) {
@@ -79,13 +79,24 @@ public class CommandClass implements CommandExecutor, TabCompleter {
                         }
                     }
                 }
-            }else if(command.getName().equalsIgnoreCase("MC_Ability_OpenGUI")) {
+
+            }else if(command.getName().equalsIgnoreCase("MC_Ability_OpenGUI")) { //Magic Skill関連
                 PlayerGUI playerGUI = new PlayerGUI(plugin);
                 if(!playerGUI.inv.containsKey(player)) {
                     playerGUI.SetGUI(player);
                 }
                 player.openInventory(playerGUI.inv.get(player));
                 return true;
+
+            }else if(command.getName().equalsIgnoreCase("MC_Ability_Difficulty")) {
+                Difficulty_Class difficulty = new Difficulty_Class();
+                if(!difficulty.Difficulty_GUI1.isEmpty()) {
+                    difficulty.Setting();
+                }
+                difficulty.Call(player);
+                player.openInventory(difficulty.Difficulty_GUI1);
+                return true;
+
             }
         }
         return false;

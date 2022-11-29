@@ -26,6 +26,7 @@ public class PlayerGUI extends ExtenderForGUI implements Listener {
 
     public static Map<Player, Inventory> inv = new HashMap<>();
     public static Map<Player, Inventory> inv2 = new HashMap<>();
+    public static Map<Player, Inventory> inv3 = new HashMap<>();
 
     public static Map<Player, Integer> menus = new HashMap<Player, Integer>();
 
@@ -50,6 +51,7 @@ public class PlayerGUI extends ExtenderForGUI implements Listener {
 
         StaminaCut(player);
         MagnetChest(player);
+        CriticalBoost(player);
 
         //Cancel Item
         ItemStack item = new ItemStack(Material.BARRIER);
@@ -92,9 +94,11 @@ public class PlayerGUI extends ExtenderForGUI implements Listener {
         }
         flag.Set();
 
-        if (!event.getInventory().equals(inv2.get(player))) {
-            if (!event.getInventory().equals(inv.get(player))) {
-                return;
+        if (!event.getInventory().equals(inv3.get(player))) {
+            if (!event.getInventory().equals(inv2.get(player))) {
+                if (!event.getInventory().equals(inv.get(player))) {
+                    return;
+                }
             }
         }
         if (event.getCurrentItem() == null) {
@@ -110,13 +114,32 @@ public class PlayerGUI extends ExtenderForGUI implements Listener {
         event.setCancelled(true);
 
         if (event.getClickedInventory() == inv.get(player)) {
-            if (event.getSlot() == 0) {
-                menus.put(player, 1);
+            switch (event.getSlot()) {
+                case 0:
+                    menus.put(player, 1);
+                    SecondGUI(player);
+                    player.openInventory(inv2.get(player));
+                    break;
 
-                SecondGUI(player);
-                player.openInventory(inv2.get(player));
-            } else if (event.getSlot() == 8) {
-                player.closeInventory();
+                case 1:
+                    menus.put(player, 2);
+                    SecondGUI(player);
+                    player.openInventory(inv3.get(player));
+
+                case 2:
+
+                case 3:
+
+                case 4:
+
+                case 5:
+
+                case 6:
+
+                case 7:
+
+                case 8:
+                    player.closeInventory();
             }
         } else if (event.getClickedInventory() == inv2.get(player)) {
 
@@ -155,6 +178,7 @@ public class PlayerGUI extends ExtenderForGUI implements Listener {
                     }
                 }
                 break;
+
             case 2:
 
         }
@@ -519,5 +543,9 @@ public class PlayerGUI extends ExtenderForGUI implements Listener {
                     break;
             }
         }
+    }
+
+    public void CriticalBoost(Player player) {
+
     }
 }
